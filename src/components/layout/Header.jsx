@@ -16,6 +16,18 @@ export function Header() {
   const sectionIds = useMemo(() => navItems.map((item) => item.id), [])
   const activeSection = useActiveSection(sectionIds)
 
+  const scrollToSection = (event, item) => {
+    event.preventDefault()
+    const section = document.getElementById(item.id)
+
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      window.history.pushState(null, '', item.href)
+    }
+
+    setIsOpen(false)
+  }
+
   const linkClass = (id) =>
     `rounded-lg px-3 py-2 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300 ${
       activeSection === id
@@ -38,7 +50,12 @@ export function Header() {
 
         <div className="hidden items-center gap-1 lg:flex">
           {navItems.map((item) => (
-            <a className={linkClass(item.id)} href={item.href} key={item.id}>
+            <a
+              className={linkClass(item.id)}
+              href={item.href}
+              key={item.id}
+              onClick={(event) => scrollToSection(event, item)}
+            >
               {item.label}
             </a>
           ))}
@@ -67,7 +84,7 @@ export function Header() {
                 className={linkClass(item.id)}
                 href={item.href}
                 key={item.id}
-                onClick={() => setIsOpen(false)}
+                onClick={(event) => scrollToSection(event, item)}
               >
                 {item.label}
               </a>

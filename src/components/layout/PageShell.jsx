@@ -4,7 +4,9 @@ export function PageShell({ children }) {
   return (
     <>
       <AnimatedBackground />
-      <div className="relative isolate min-h-screen text-slate-100">{children}</div>
+      <div className="relative z-10 min-h-screen overflow-x-hidden text-slate-100">
+        {children}
+      </div>
     </>
   )
 }

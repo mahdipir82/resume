@@ -29,6 +29,12 @@ body {
   min-height: 100vh;
   direction: rtl;
   background: #020617;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  isolation: isolate;
 }
 
 a {

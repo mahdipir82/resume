@@ -13,9 +13,20 @@ export function AnimatedBackground() {
   const reducedMotion = useReducedMotion()
 
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#020817]">
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#020817]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(34,211,238,0.18),transparent_34%),radial-gradient(circle_at_20%_25%,rgba(168,85,247,0.12),transparent_32%),linear-gradient(180deg,#020817_0%,#06111f_48%,#020617_100%)]" />
-      <div className="absolute inset-0 opacity-[0.16] [background-image:linear-gradient(rgba(148,163,184,0.25)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.25)_1px,transparent_1px)] [background-size:56px_56px]" />
+      <motion.div
+        aria-hidden="true"
+        className="absolute inset-0 opacity-[0.16] [background-image:linear-gradient(rgba(148,163,184,0.25)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.25)_1px,transparent_1px)] [background-size:56px_56px]"
+        animate={reducedMotion ? undefined : { backgroundPosition: ['0px 0px', '56px 56px'] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+      />
+      <motion.div
+        aria-hidden="true"
+        className="absolute -inset-x-32 top-1/3 h-32 rotate-[-10deg] bg-gradient-to-l from-transparent via-cyan-300/10 to-transparent blur-2xl"
+        animate={reducedMotion ? undefined : { x: ['25%', '-25%', '25%'] }}
+        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+      />
       <motion.div
         aria-hidden="true"
         className="absolute -right-32 top-20 h-80 w-80 rounded-full bg-cyan-400/15 blur-3xl"
