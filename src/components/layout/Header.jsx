@@ -1,5 +1,5 @@
 import { Menu, X } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useActiveSection } from '../../hooks/useActiveSection'
 import { scrollToSection } from '../../utils/scrollToSection'
 
@@ -14,17 +14,28 @@ const navItems = [
 
 export function Header({ initials = 'MP' }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [clickedSection, setClickedSection] = useState(null)
   const sectionIds = useMemo(() => navItems.map((item) => item.id), [])
   const activeSection = useActiveSection(sectionIds)
+  const visibleActiveSection = clickedSection ?? activeSection
+
+  useEffect(() => {
+    if (!clickedSection) return
+
+    const timeoutId = window.setTimeout(() => setClickedSection(null), 700)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [clickedSection])
 
   const handleNavigation = (sectionId) => {
+    setClickedSection(sectionId)
     scrollToSection(sectionId)
     setIsOpen(false)
   }
 
   const linkClass = (id) =>
     `rounded-lg px-3 py-2 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300 ${
-      activeSection === id
+      visibleActiveSection === id
         ? 'bg-cyan-300/10 text-cyan-200'
         : 'text-slate-300 hover:bg-white/5 hover:text-white'
     }`

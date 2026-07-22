@@ -1,29 +1,44 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export function useActiveSection(sectionIds) {
   const [activeSection, setActiveSection] = useState(sectionIds[0])
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+  const updateActiveSection = useCallback(() => {
+    const header = document.querySelector('[data-site-header]')
+    const headerOffset = header?.getBoundingClientRect().height ?? 0
+    const activationLine = window.scrollY + headerOffset + 96
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean)
 
-        if (visibleEntry) {
-          setActiveSection(visibleEntry.target.id)
-        }
-      },
-      { rootMargin: '-30% 0px -55% 0px', threshold: [0.15, 0.35, 0.6] },
-    )
+    if (!sections.length) return
 
-    sectionIds.forEach((id) => {
-      const section = document.getElementById(id)
-      if (section) observer.observe(section)
-    })
+    const pageBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 8
 
-    return () => observer.disconnect()
+    if (pageBottom) {
+      setActiveSection(sections.at(-1).id)
+      return
+    }
+
+    const currentSection = sections.reduce((current, section) => {
+      if (section.offsetTop <= activationLine) return section
+
+      return current
+    }, sections[0])
+
+    setActiveSection(currentSection.id)
   }, [sectionIds])
+
+  useEffect(() => {
+    updateActiveSection()
+    window.addEventListener('scroll', updateActiveSection, { passive: true })
+    window.addEventListener('resize', updateActiveSection)
+
+    return () => {
+      window.removeEventListener('scroll', updateActiveSection)
+      window.removeEventListener('resize', updateActiveSection)
+    }
+  }, [updateActiveSection])
 
   return activeSection
 }
