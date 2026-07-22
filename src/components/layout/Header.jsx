@@ -12,7 +12,7 @@ const navItems = [
   { id: 'contact', label: 'تماس با من', icon: Mail },
 ]
 
-export function Header({ initials = 'MP', logoUrl = '' }) {
+export function Header({ initials = 'MP', logoUrl = '', onLogoDoubleClick }) {
   const [isOpen, setIsOpen] = useState(false)
   const [clickedSection, setClickedSection] = useState(null)
   const sectionIds = useMemo(() => navItems.map((item) => item.id), [])
@@ -31,6 +31,11 @@ export function Header({ initials = 'MP', logoUrl = '' }) {
     setClickedSection(sectionId)
     scrollToSection(sectionId)
     setIsOpen(false)
+  }
+
+  const handleLogoDoubleClick = (event) => {
+    event.preventDefault()
+    onLogoDoubleClick?.()
   }
 
   const linkClass = (id) =>
@@ -52,6 +57,7 @@ export function Header({ initials = 'MP', logoUrl = '' }) {
         <button
           className="inline-flex h-11 min-w-11 items-center justify-center rounded-lg border border-cyan-300/25 bg-cyan-300/10 px-3 text-lg font-bold tracking-normal text-white transition hover:bg-cyan-300/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
           onClick={() => handleNavigation('home')}
+          onDoubleClick={handleLogoDoubleClick}
           type="button"
         >
           {logoUrl ? (

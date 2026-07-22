@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { PageShell } from './components/layout/PageShell'
 import { AdminPanel } from './components/admin/AdminPanel'
 import { Footer } from './components/layout/Footer'
@@ -18,6 +18,7 @@ import { scrollToSection } from './utils/scrollToSection'
 
 function App() {
   useOnePageNavigation()
+  const [adminOpenSignal, setAdminOpenSignal] = useState(0)
   const { content, error, isLoading, resetContent, saveContent } = useSiteContent()
   const {
     createProject,
@@ -67,6 +68,7 @@ function App() {
   return (
     <PageShell theme={content}>
       <AdminPanel
+        openSignal={adminOpenSignal}
         content={content}
         onCreateProject={createProject}
         onCreateSkillGroup={createSkillGroup}
@@ -100,7 +102,11 @@ function App() {
       >
         رفتن به محتوای اصلی
       </button>
-      <Header initials={content.initials} logoUrl={content.logoUrl} />
+      <Header
+        initials={content.initials}
+        logoUrl={content.logoUrl}
+        onLogoDoubleClick={() => setAdminOpenSignal((value) => value + 1)}
+      />
       <main className="pt-20" id="main-content">
         <Hero content={content} />
         <About content={content} />

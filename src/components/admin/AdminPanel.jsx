@@ -44,6 +44,8 @@ const fields = [
 ]
 
 export function AdminPanel({
+  openSignal = 0,
+  showLauncher = false,
   content,
   onCreateProject,
   onCreateSkillGroup,
@@ -73,6 +75,12 @@ export function AdminPanel({
   useEffect(() => {
     setDraft(content)
   }, [content])
+
+  useEffect(() => {
+    if (openSignal > 0) {
+      setIsOpen(true)
+    }
+  }, [openSignal])
 
   useEffect(() => {
     if (!isOpen) return
@@ -212,7 +220,7 @@ export function AdminPanel({
   return (
     <>
       <button
-        className="fixed bottom-5 left-5 z-[75] inline-flex h-12 w-12 items-center justify-center rounded-lg border border-cyan-300/30 bg-slate-950/80 text-cyan-100 shadow-2xl shadow-cyan-950/30 backdrop-blur-xl transition hover:bg-cyan-300/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
+        className={`${showLauncher ? 'fixed bottom-5 left-5 z-[75] inline-flex' : 'hidden'} h-12 w-12 items-center justify-center rounded-lg border border-cyan-300/30 bg-slate-950/80 text-cyan-100 shadow-2xl shadow-cyan-950/30 backdrop-blur-xl transition hover:bg-cyan-300/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300`}
         onClick={() => setIsOpen(true)}
         type="button"
       >
