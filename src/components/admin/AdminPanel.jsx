@@ -1,7 +1,10 @@
-import { RotateCcw, Save, Settings, X } from 'lucide-react'
+import { KeyRound, LogOut, RotateCcw, Save, Settings, ShieldCheck, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
+
+const passwordStorageKey = 'mahdi-portfolio-admin-password'
+const sessionStorageKey = 'mahdi-portfolio-admin-session'
 
 const fields = [
   { key: 'fullName', label: 'نام کامل' },
@@ -27,14 +30,33 @@ const fields = [
   { key: 'contactDescription', label: 'توضیح تماس', multiline: true },
 ]
 
+async function hashPassword(password) {
+  const encodedPassword = new TextEncoder().encode(password)
+  const hashBuffer = await window.crypto.subtle.digest('SHA-256', encodedPassword)
+
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('')
+}
+
 export function AdminPanel({ content, onReset, onSave }) {
   const [isOpen, setIsOpen] = useState(false)
   const [draft, setDraft] = useState(content)
   const [status, setStatus] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [authError, setAuthError] = useState('')
+  const [hasPassword, setHasPassword] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
     setDraft(content)
   }, [content])
+
+  useEffect(() => {
+    setHasPassword(Boolean(window.localStorage.getItem(passwordStorageKey)))
+    setIsAuthenticated(window.sessionStorage.getItem(sessionStorageKey) === 'true')
+  }, [isOpen])
 
   const updateDraft = (key, value) => {
     setDraft((current) => ({ ...current, [key]: value }))
@@ -51,6 +73,110 @@ export function AdminPanel({ content, onReset, onSave }) {
     onReset()
     setStatus('محتوا به حالت اولیه برگشت.')
   }
+
+  const createPassword = async (event) => {
+    event.preventDefault()
+    setAuthError('')
+
+    if (password.length < 8) {
+      setAuthError('رمز باید حداقل ۸ کاراکتر باشد.')
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setAuthError('تکرار رمز با رمز اصلی یکی نیست.')
+      return
+    }
+
+    const passwordHash = await hashPassword(password)
+    window.localStorage.setItem(passwordStorageKey, passwordHash)
+    window.sessionStorage.setItem(sessionStorageKey, 'true')
+    setHasPassword(true)
+    setIsAuthenticated(true)
+    setPassword('')
+    setConfirmPassword('')
+    setStatus('رمز پنل مدیریت ساخته شد.')
+  }
+
+  const login = async (event) => {
+    event.preventDefault()
+    setAuthError('')
+
+    const savedHash = window.localStorage.getItem(passwordStorageKey)
+    const passwordHash = await hashPassword(password)
+
+    if (passwordHash !== savedHash) {
+      setAuthError('رمز واردشده درست نیست.')
+      return
+    }
+
+    window.sessionStorage.setItem(sessionStorageKey, 'true')
+    setIsAuthenticated(true)
+    setPassword('')
+  }
+
+  const logout = () => {
+    window.sessionStorage.removeItem(sessionStorageKey)
+    setIsAuthenticated(false)
+    setStatus('از پنل خارج شدید.')
+  }
+
+  const resetPassword = () => {
+    window.localStorage.removeItem(passwordStorageKey)
+    window.sessionStorage.removeItem(sessionStorageKey)
+    setHasPassword(false)
+    setIsAuthenticated(false)
+    setPassword('')
+    setConfirmPassword('')
+    setAuthError('')
+  }
+
+  const renderAuth = () => (
+    <form className="mx-auto grid max-w-xl gap-4" onSubmit={hasPassword ? login : createPassword}>
+      <div className="rounded-lg border border-cyan-300/20 bg-cyan-300/10 p-4 text-sm leading-7 text-cyan-50">
+        <ShieldCheck aria-hidden="true" className="mb-3 text-cyan-200" size={22} />
+        {hasPassword
+          ? 'برای ورود به پنل مدیریت رمز را وارد کنید.'
+          : 'برای اولین استفاده، یک رمز محلی برای پنل مدیریت بسازید. این رمز داخل کد یا GitHub ذخیره نمی‌شود.'}
+      </div>
+      <label className="block">
+        <span className="text-sm font-semibold text-slate-200">رمز پنل مدیریت</span>
+        <input
+          autoComplete={hasPassword ? 'current-password' : 'new-password'}
+          className="mt-2 w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
+          dir="ltr"
+          onChange={(event) => setPassword(event.target.value)}
+          type="password"
+          value={password}
+        />
+      </label>
+      {!hasPassword ? (
+        <label className="block">
+          <span className="text-sm font-semibold text-slate-200">تکرار رمز</span>
+          <input
+            autoComplete="new-password"
+            className="mt-2 w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
+            dir="ltr"
+            onChange={(event) => setConfirmPassword(event.target.value)}
+            type="password"
+            value={confirmPassword}
+          />
+        </label>
+      ) : null}
+      {authError ? <p className="text-sm text-rose-300">{authError}</p> : null}
+      <div className="flex flex-wrap gap-3">
+        <Button as="button" icon={null} type="submit">
+          <KeyRound aria-hidden="true" size={18} />
+          {hasPassword ? 'ورود به پنل' : 'ساخت رمز و ورود'}
+        </Button>
+        {hasPassword ? (
+          <Button as="button" icon={null} onClick={resetPassword} type="button" variant="ghost">
+            فراموشی رمز
+          </Button>
+        ) : null}
+      </div>
+    </form>
+  )
 
   return (
     <>
@@ -79,7 +205,7 @@ export function AdminPanel({ content, onReset, onSave }) {
                     ویرایش محتوای سایت
                   </h2>
                   <p className="mt-2 text-sm leading-7 text-slate-400">
-                    تغییرات روی همین مرورگر ذخیره می‌شود و بدون بک‌اند کار می‌کند.
+                    پنل با رمز محلی محافظت می‌شود و تغییرات روی همین مرورگر ذخیره می‌ماند.
                   </p>
                 </div>
                 <button
@@ -92,51 +218,61 @@ export function AdminPanel({ content, onReset, onSave }) {
                 </button>
               </div>
 
-              <form className="grid gap-5" onSubmit={saveDraft}>
-                <div className="grid gap-4 md:grid-cols-2">
-                  {fields.map((field) => (
-                    <label
-                      className={field.multiline ? 'block md:col-span-2' : 'block'}
-                      key={field.key}
-                    >
-                      <span className="text-sm font-semibold text-slate-200">{field.label}</span>
-                      {field.multiline ? (
-                        <textarea
-                          className="mt-2 min-h-28 w-full resize-y rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 leading-8 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
-                          dir={field.dir ?? 'rtl'}
-                          onChange={(event) => updateDraft(field.key, event.target.value)}
-                          value={draft[field.key] ?? ''}
-                        />
-                      ) : (
-                        <input
-                          className="mt-2 w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
-                          dir={field.dir ?? 'rtl'}
-                          onChange={(event) => updateDraft(field.key, event.target.value)}
-                          value={draft[field.key] ?? ''}
-                        />
-                      )}
-                    </label>
-                  ))}
-                </div>
+              {!isAuthenticated ? (
+                renderAuth()
+              ) : (
+                <form className="grid gap-5" onSubmit={saveDraft}>
+                  <div className="flex justify-end">
+                    <Button as="button" icon={null} onClick={logout} type="button" variant="ghost">
+                      <LogOut aria-hidden="true" size={18} />
+                      خروج از پنل
+                    </Button>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {fields.map((field) => (
+                      <label
+                        className={field.multiline ? 'block md:col-span-2' : 'block'}
+                        key={field.key}
+                      >
+                        <span className="text-sm font-semibold text-slate-200">{field.label}</span>
+                        {field.multiline ? (
+                          <textarea
+                            className="mt-2 min-h-28 w-full resize-y rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 leading-8 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
+                            dir={field.dir ?? 'rtl'}
+                            onChange={(event) => updateDraft(field.key, event.target.value)}
+                            value={draft[field.key] ?? ''}
+                          />
+                        ) : (
+                          <input
+                            className="mt-2 w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
+                            dir={field.dir ?? 'rtl'}
+                            onChange={(event) => updateDraft(field.key, event.target.value)}
+                            value={draft[field.key] ?? ''}
+                          />
+                        )}
+                      </label>
+                    ))}
+                  </div>
 
-                <div className="flex flex-wrap items-center gap-3 border-t border-white/10 pt-5">
-                  <Button as="button" icon={null} type="submit">
-                    <Save aria-hidden="true" size={18} />
-                    ذخیره تغییرات
-                  </Button>
-                  <Button
-                    as="button"
-                    icon={null}
-                    onClick={resetDraft}
-                    type="button"
-                    variant="secondary"
-                  >
-                    <RotateCcw aria-hidden="true" size={18} />
-                    بازگشت به حالت اولیه
-                  </Button>
-                  {status ? <p className="text-sm text-cyan-200">{status}</p> : null}
-                </div>
-              </form>
+                  <div className="flex flex-wrap items-center gap-3 border-t border-white/10 pt-5">
+                    <Button as="button" icon={null} type="submit">
+                      <Save aria-hidden="true" size={18} />
+                      ذخیره تغییرات
+                    </Button>
+                    <Button
+                      as="button"
+                      icon={null}
+                      onClick={resetDraft}
+                      type="button"
+                      variant="secondary"
+                    >
+                      <RotateCcw aria-hidden="true" size={18} />
+                      بازگشت به حالت اولیه
+                    </Button>
+                    {status ? <p className="text-sm text-cyan-200">{status}</p> : null}
+                  </div>
+                </form>
+              )}
             </Card>
           </div>
         </div>
