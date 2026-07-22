@@ -2,6 +2,7 @@ import { BriefcaseBusiness, Code2, Mail, MapPin } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
+import { scrollToSection } from '../../utils/scrollToSection'
 
 const socialLinks = [
   {
@@ -19,7 +20,7 @@ const socialLinks = [
 export function Hero() {
   return (
     <section
-      className="mx-auto grid min-h-[calc(100vh-77px)] max-w-6xl items-center gap-12 px-5 py-20 md:px-6 lg:grid-cols-[1.05fr_0.95fr]"
+      className="mx-auto grid min-h-[calc(100vh-77px)] max-w-6xl scroll-mt-28 items-center gap-12 px-5 py-20 md:px-6 lg:grid-cols-[1.05fr_0.95fr]"
       id="home"
     >
       <motion.div
@@ -43,11 +44,25 @@ export function Hero() {
         </p>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button href="#projects">مشاهده پروژه‌ها</Button>
-          <Button href="#contact" variant="secondary">
+          <Button as="button" onClick={() => scrollToSection('projects')} type="button">
+            مشاهده پروژه‌ها
+          </Button>
+          <Button
+            as="button"
+            onClick={() => scrollToSection('contact')}
+            type="button"
+            variant="secondary"
+          >
             تماس با من
           </Button>
-          <Button as="button" className="cursor-not-allowed opacity-70" disabled icon="download" type="button" variant="ghost">
+          <Button
+            as="button"
+            className="cursor-not-allowed opacity-70"
+            disabled
+            icon="download"
+            type="button"
+            variant="ghost"
+          >
             رزومه به‌زودی
           </Button>
         </div>
@@ -78,7 +93,10 @@ export function Hero() {
       >
         <Card className="relative overflow-hidden p-5">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-l from-transparent via-cyan-300/70 to-transparent" />
-          <div className="rounded-lg border border-white/10 bg-slate-950/70 p-5 text-left shadow-inner shadow-cyan-950/30" dir="ltr">
+          <div
+            className="rounded-lg border border-white/10 bg-slate-950/70 p-5 text-left shadow-inner shadow-cyan-950/30"
+            dir="ltr"
+          >
             <div className="mb-5 flex items-center gap-2">
               <span className="h-3 w-3 rounded-full bg-rose-400" />
               <span className="h-3 w-3 rounded-full bg-amber-300" />

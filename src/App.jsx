@@ -8,18 +8,20 @@ import { Projects } from './components/sections/Projects'
 import { Skills } from './components/sections/Skills'
 import { Timeline } from './components/sections/Timeline'
 import { useOnePageNavigation } from './hooks/useOnePageNavigation'
+import { scrollToSection } from './utils/scrollToSection'
 
 function App() {
   useOnePageNavigation()
 
   return (
     <PageShell>
-      <a
+      <button
         className="sr-only focus:not-sr-only focus:fixed focus:right-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-cyan-300 focus:px-4 focus:py-3 focus:font-semibold focus:text-slate-950"
-        href="#main-content"
+        onClick={() => scrollToSection('about')}
+        type="button"
       >
         رفتن به محتوای اصلی
-      </a>
+      </button>
       <Header />
       <main id="main-content">
         <Hero />

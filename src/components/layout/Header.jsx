@@ -1,14 +1,15 @@
 import { Menu, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useActiveSection } from '../../hooks/useActiveSection'
+import { scrollToSection } from '../../utils/scrollToSection'
 
 const navItems = [
-  { href: '#home', id: 'home', label: 'خانه' },
-  { href: '#about', id: 'about', label: 'درباره من' },
-  { href: '#skills', id: 'skills', label: 'مهارت‌ها' },
-  { href: '#projects', id: 'projects', label: 'پروژه‌ها' },
-  { href: '#timeline', id: 'timeline', label: 'مسیر یادگیری' },
-  { href: '#contact', id: 'contact', label: 'تماس با من' },
+  { id: 'home', label: 'خانه' },
+  { id: 'about', label: 'درباره من' },
+  { id: 'skills', label: 'مهارت‌ها' },
+  { id: 'projects', label: 'پروژه‌ها' },
+  { id: 'timeline', label: 'مسیر یادگیری' },
+  { id: 'contact', label: 'تماس با من' },
 ]
 
 export function Header() {
@@ -16,15 +17,8 @@ export function Header() {
   const sectionIds = useMemo(() => navItems.map((item) => item.id), [])
   const activeSection = useActiveSection(sectionIds)
 
-  const scrollToSection = (event, item) => {
-    event.preventDefault()
-    event.stopPropagation()
-    const section = document.getElementById(item.id)
-
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-
+  const handleNavigation = (sectionId) => {
+    scrollToSection(sectionId)
     setIsOpen(false)
   }
 
@@ -36,28 +30,32 @@ export function Header() {
     }`
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/65 backdrop-blur-xl">
+    <header
+      className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/65 backdrop-blur-xl"
+      data-site-header
+    >
       <nav
         aria-label="ناوبری اصلی"
         className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 md:px-6"
       >
-        <a
+        <button
           className="rounded-lg text-lg font-bold tracking-normal text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
-          href="#home"
+          onClick={() => handleNavigation('home')}
+          type="button"
         >
           MP
-        </a>
+        </button>
 
         <div className="hidden items-center gap-1 lg:flex">
           {navItems.map((item) => (
-            <a
+            <button
               className={linkClass(item.id)}
-              href={item.href}
               key={item.id}
-              onClick={(event) => scrollToSection(event, item)}
+              onClick={() => handleNavigation(item.id)}
+              type="button"
             >
               {item.label}
-            </a>
+            </button>
           ))}
         </div>
 
@@ -80,14 +78,14 @@ export function Header() {
         <div className="min-h-0">
           <div className="mx-auto flex max-w-6xl flex-col gap-1 px-5 py-3">
             {navItems.map((item) => (
-              <a
+              <button
                 className={linkClass(item.id)}
-                href={item.href}
                 key={item.id}
-                onClick={(event) => scrollToSection(event, item)}
+                onClick={() => handleNavigation(item.id)}
+                type="button"
               >
                 {item.label}
-              </a>
+              </button>
             ))}
           </div>
         </div>
