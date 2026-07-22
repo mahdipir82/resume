@@ -6,8 +6,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from .defaults import DEFAULT_SITE_CONTENT
-from .models import Project, SiteContent
+from .models import Project, SiteContent, SkillGroup
 from .project_defaults import DEFAULT_PROJECTS
+from .skill_defaults import DEFAULT_SKILL_GROUPS
 
 
 PROJECT_FIELDS = [
@@ -23,6 +24,13 @@ PROJECT_FIELDS = [
     'live_url',
     'status',
     'featured',
+    'sort_order',
+]
+
+SKILL_GROUP_FIELDS = [
+    'title',
+    'icon',
+    'skills',
     'sort_order',
 ]
 
@@ -102,6 +110,60 @@ def seed_projects_if_empty():
 
     for project_data in DEFAULT_PROJECTS:
         Project.objects.create(**project_data)
+
+
+def serialize_skill_group(skill_group):
+    return {
+        'id': skill_group.id,
+        'title': skill_group.title,
+        'icon': skill_group.icon,
+        'skills': skill_group.skills,
+        'sortOrder': skill_group.sort_order,
+    }
+
+
+def normalize_skill_group_payload(payload):
+    skills = []
+
+    if isinstance(payload.get('skills', []), list):
+        for skill in payload.get('skills', []):
+            if not isinstance(skill, dict):
+                continue
+
+            name = str(skill.get('name', '')).strip()
+            level = str(skill.get('level', '')).strip()
+
+            if name:
+                skills.append({'name': name, 'level': level})
+
+    return {
+        'title': payload.get('title', '').strip(),
+        'icon': payload.get('icon', 'code').strip() or 'code',
+        'skills': skills,
+        'sort_order': int(payload.get('sortOrder') or 0),
+    }
+
+
+def validate_skill_group_payload(data):
+    if not data['title']:
+        return 'عنوان دسته مهارت الزامی است.'
+
+    if not isinstance(data['skills'], list):
+        return 'مهارت‌ها باید آرایه باشند.'
+
+    for skill in data['skills']:
+        if not isinstance(skill, dict) or not skill.get('name', '').strip():
+            return 'نام هر مهارت الزامی است.'
+
+    return ''
+
+
+def seed_skill_groups_if_empty():
+    if SkillGroup.objects.exists():
+        return
+
+    for skill_group_data in DEFAULT_SKILL_GROUPS:
+        SkillGroup.objects.create(**skill_group_data)
 
 
 @api_view(['GET'])
@@ -234,3 +296,54 @@ def project_detail(request, project_id):
 
     project.save()
     return Response(serialize_project(project))
+
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def skill_groups(request):
+    seed_skill_groups_if_empty()
+
+    if request.method == 'GET':
+        return Response([serialize_skill_group(skill_group) for skill_group in SkillGroup.objects.all()])
+
+    if not request.user.is_authenticated:
+        return Response({'detail': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    skill_group_data = normalize_skill_group_payload(request.data)
+    validation_error = validate_skill_group_payload(skill_group_data)
+
+    if validation_error:
+        return Response({'detail': validation_error}, status=status.HTTP_400_BAD_REQUEST)
+
+    skill_group = SkillGroup.objects.create(**skill_group_data)
+    return Response(serialize_skill_group(skill_group), status=status.HTTP_201_CREATED)
+
+
+@csrf_exempt
+@api_view(['PUT', 'DELETE'])
+@permission_classes([AllowAny])
+def skill_group_detail(request, skill_group_id):
+    if not request.user.is_authenticated:
+        return Response({'detail': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        skill_group = SkillGroup.objects.get(id=skill_group_id)
+    except SkillGroup.DoesNotExist:
+        return Response({'detail': 'Skill group not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        skill_group.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    skill_group_data = normalize_skill_group_payload(request.data)
+    validation_error = validate_skill_group_payload(skill_group_data)
+
+    if validation_error:
+        return Response({'detail': validation_error}, status=status.HTTP_400_BAD_REQUEST)
+
+    for field in SKILL_GROUP_FIELDS:
+        setattr(skill_group, field, skill_group_data[field])
+
+    skill_group.save()
+    return Response(serialize_skill_group(skill_group))

@@ -31,3 +31,18 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class SkillGroup(models.Model):
+    title = models.CharField(max_length=120)
+    icon = models.CharField(max_length=40, default='code')
+    skills = models.JSONField(default=list)
+    sort_order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['sort_order', 'title']
+
+    def __str__(self):
+        return self.title

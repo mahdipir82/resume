@@ -9,6 +9,8 @@ urlpatterns = [
     path('admin/logout/', views.admin_logout),
     path('projects/', views.projects),
     path('projects/<int:project_id>/', views.project_detail),
+    path('skill-groups/', views.skill_groups),
+    path('skill-groups/<int:skill_group_id>/', views.skill_group_detail),
     path('site-content/', views.site_content),
     path('site-content/reset/', views.reset_site_content),
 ]
