@@ -1,6 +1,9 @@
+import { PageShell } from './components/layout/PageShell'
+import { Button } from './components/ui/Button'
+
 function App() {
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100">
+    <PageShell>
       <section className="mx-auto flex min-h-screen max-w-6xl items-center px-6 py-24">
         <div>
           <p className="text-sm font-semibold text-cyan-300">Mahdi Pirhayati</p>
@@ -11,9 +14,15 @@ function App() {
             توسعه‌دهنده بک‌اند Python و Django، علاقه‌مند به ساخت APIهای تمیز و
             پروژه‌های Full Stack.
           </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button href="#projects">مشاهده پروژه‌ها</Button>
+            <Button href="#contact" variant="secondary">
+              تماس با من
+            </Button>
+          </div>
         </div>
       </section>
-    </main>
+    </PageShell>
   )
 }
 
