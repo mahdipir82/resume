@@ -18,6 +18,7 @@ export function SideScrollbar() {
   const [metrics, setMetrics] = useState({ maxScroll: 1, progress: 0, thumbHeight: 18 })
   const trackRef = useRef(null)
   const isDraggingRef = useRef(false)
+  const wheelSpeed = 2.6
 
   useEffect(() => {
     const updateMetrics = () => setMetrics(getScrollMetrics())
@@ -73,7 +74,7 @@ export function SideScrollbar() {
     window.scrollBy({
       behavior: 'auto',
       left: 0,
-      top: event.deltaY,
+      top: event.deltaY * wheelSpeed,
     })
   }
 

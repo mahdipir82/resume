@@ -1,6 +1,8 @@
 import { useLayoutEffect } from 'react'
 
 export function useOnePageNavigation() {
+  const wheelSpeed = 2.6
+
   useLayoutEffect(() => {
     if (!window.location.hash) return
 
@@ -25,7 +27,7 @@ export function useOnePageNavigation() {
         window.scrollBy({
           behavior: 'auto',
           left: 0,
-          top: event.deltaY,
+          top: event.deltaY * wheelSpeed,
         })
       })
     }
