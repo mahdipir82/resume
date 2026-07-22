@@ -4,33 +4,6 @@ import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
 import { SectionHeading } from '../ui/SectionHeading'
 
-const contactLinks = [
-  {
-    href: 'mailto:mahdipirhayati1382@gmail.com',
-    icon: Mail,
-    label: 'mahdipirhayati1382@gmail.com',
-    title: 'ایمیل',
-  },
-  {
-    href: 'tel:+989014105191',
-    icon: Phone,
-    label: '09014105191',
-    title: 'شماره تماس',
-  },
-  {
-    href: 'https://github.com/mahdipir82',
-    icon: Code2,
-    label: 'github.com/mahdipir82',
-    title: 'GitHub',
-  },
-  {
-    href: 'https://www.linkedin.com/in/mahdi-pirhayati/',
-    icon: BriefcaseBusiness,
-    label: 'mahdi-pirhayati',
-    title: 'LinkedIn',
-  },
-]
-
 const initialForm = {
   email: '',
   message: '',
@@ -38,9 +11,36 @@ const initialForm = {
   subject: '',
 }
 
-export function Contact() {
+export function Contact({ content }) {
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState({})
+
+  const contactLinks = [
+    {
+      href: `mailto:${content.email}`,
+      icon: Mail,
+      label: content.email,
+      title: 'ایمیل',
+    },
+    {
+      href: `tel:${content.phone}`,
+      icon: Phone,
+      label: content.phone,
+      title: 'شماره تماس',
+    },
+    {
+      href: content.githubUrl,
+      icon: Code2,
+      label: content.githubLabel,
+      title: 'GitHub',
+    },
+    {
+      href: content.linkedinUrl,
+      icon: BriefcaseBusiness,
+      label: content.linkedinLabel,
+      title: 'LinkedIn',
+    },
+  ].filter((link) => link.href)
 
   const updateField = (event) => {
     const { name, value } = event.target
@@ -71,7 +71,7 @@ export function Contact() {
       `نام: ${form.name}\nایمیل: ${form.email}\n\n${form.message}`,
     )
     const subject = encodeURIComponent(form.subject)
-    window.location.href = `mailto:mahdipirhayati1382@gmail.com?subject=${subject}&body=${body}`
+    window.location.href = `mailto:${content.email}?subject=${subject}&body=${body}`
   }
 
   const inputClass =
@@ -81,8 +81,8 @@ export function Contact() {
     <section className="mx-auto max-w-6xl px-5 py-20 md:px-6" id="contact">
       <SectionHeading
         eyebrow="تماس با من"
-        title="برای همکاری، کارآموزی یا گفت‌وگو درباره پروژه در دسترسم."
-        description="فرم زیر پیام را از طریق برنامه ایمیل شما آماده می‌کند و هیچ کلید یا سرویس محرمانه‌ای در کد استفاده نشده است."
+        title={content.contactTitle}
+        description={content.contactDescription}
       />
 
       <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
@@ -90,7 +90,14 @@ export function Contact() {
           {contactLinks.map((link) => {
             const Icon = link.icon
             return (
-              <Card as="a" className="block p-5" href={link.href} key={link.title} rel="noreferrer" target={link.href.startsWith('http') ? '_blank' : undefined}>
+              <Card
+                as="a"
+                className="block p-5"
+                href={link.href}
+                key={link.title}
+                rel="noreferrer"
+                target={link.href.startsWith('http') ? '_blank' : undefined}
+              >
                 <div className="flex items-center gap-4">
                   <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-cyan-300/25 bg-cyan-300/10 text-cyan-200">
                     <Icon aria-hidden="true" size={21} />
@@ -121,7 +128,11 @@ export function Contact() {
                   placeholder="نام شما"
                   value={form.name}
                 />
-                {errors.name ? <span className="mt-2 block text-xs text-rose-300" id="name-error">{errors.name}</span> : null}
+                {errors.name ? (
+                  <span className="mt-2 block text-xs text-rose-300" id="name-error">
+                    {errors.name}
+                  </span>
+                ) : null}
               </label>
               <label className="block text-sm font-semibold text-slate-200">
                 ایمیل
@@ -136,7 +147,11 @@ export function Contact() {
                   type="email"
                   value={form.email}
                 />
-                {errors.email ? <span className="mt-2 block text-xs text-rose-300" id="email-error">{errors.email}</span> : null}
+                {errors.email ? (
+                  <span className="mt-2 block text-xs text-rose-300" id="email-error">
+                    {errors.email}
+                  </span>
+                ) : null}
               </label>
             </div>
             <label className="block text-sm font-semibold text-slate-200">
@@ -150,7 +165,11 @@ export function Contact() {
                 placeholder="موضوع پیام"
                 value={form.subject}
               />
-              {errors.subject ? <span className="mt-2 block text-xs text-rose-300" id="subject-error">{errors.subject}</span> : null}
+              {errors.subject ? (
+                <span className="mt-2 block text-xs text-rose-300" id="subject-error">
+                  {errors.subject}
+                </span>
+              ) : null}
             </label>
             <label className="block text-sm font-semibold text-slate-200">
               پیام
@@ -163,7 +182,11 @@ export function Contact() {
                 placeholder="پیام خود را بنویسید..."
                 value={form.message}
               />
-              {errors.message ? <span className="mt-2 block text-xs text-rose-300" id="message-error">{errors.message}</span> : null}
+              {errors.message ? (
+                <span className="mt-2 block text-xs text-rose-300" id="message-error">
+                  {errors.message}
+                </span>
+              ) : null}
             </label>
             <div>
               <Button as="button" type="submit">

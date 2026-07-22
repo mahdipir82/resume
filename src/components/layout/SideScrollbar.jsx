@@ -18,7 +18,7 @@ export function SideScrollbar() {
   const [metrics, setMetrics] = useState({ maxScroll: 1, progress: 0, thumbHeight: 18 })
   const trackRef = useRef(null)
   const isDraggingRef = useRef(false)
-  const wheelSpeed = 2.6
+  const wheelSpeed = 3.4
 
   useEffect(() => {
     const updateMetrics = () => setMetrics(getScrollMetrics())

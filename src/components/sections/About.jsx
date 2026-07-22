@@ -3,33 +3,27 @@ import { motion } from 'framer-motion'
 import { Card } from '../ui/Card'
 import { SectionHeading } from '../ui/SectionHeading'
 
-const facts = [
-  { icon: MapPin, label: 'ساکن ملایر' },
-  { icon: GraduationCap, label: 'کارشناسی مهندسی نرم‌افزار' },
-  { icon: Server, label: 'علاقه‌مند به توسعه بک‌اند' },
-  { icon: HeartHandshake, label: 'آماده همکاری و کارآموزی' },
-]
+export function About({ content }) {
+  const facts = [
+    { icon: MapPin, label: `ساکن ${content.location}` },
+    { icon: GraduationCap, label: content.education },
+    { icon: Server, label: content.focus },
+    { icon: HeartHandshake, label: content.availability },
+  ]
 
-export function About() {
   return (
     <section className="mx-auto max-w-6xl px-5 py-20 md:px-6" id="about">
       <SectionHeading
         eyebrow="درباره من"
-        title="مسیرم را با یادگیری عمیق بک‌اند و ساخت پروژه واقعی جلو می‌برم."
-        description="تمرکز من روی نوشتن کد تمیز، طراحی API قابل فهم و کار با داده‌هاست؛ چیزهایی که در پروژه‌های واقعی ارزش خودشان را نشان می‌دهند."
+        title={content.aboutTitle}
+        description={content.aboutDescription}
       />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
         <Card className="p-6 md:p-8">
-          <p className="text-lg leading-9 text-slate-200">
-            من مهدی پیرحیاتی، دانشجوی مهندسی نرم‌افزار و علاقه‌مند به توسعه وب
-            هستم. تمرکز اصلی من روی توسعه بک‌اند با Python و Django، طراحی API
-            و کار با پایگاه‌داده PostgreSQL است.
-          </p>
+          <p className="text-lg leading-9 text-slate-200">{content.aboutPrimary}</p>
           <p className="mt-5 text-base leading-8 text-slate-300">
-            با ساخت پروژه‌های واقعی، مهارت‌هایم را مرحله‌به‌مرحله گسترش می‌دهم
-            و تلاش می‌کنم برای ورود حرفه‌ای به بازار کار آماده شوم. برای من
-            کیفیت ساختار، خوانایی کد و قابلیت توسعه اهمیت زیادی دارد.
+            {content.aboutSecondary}
           </p>
         </Card>
 

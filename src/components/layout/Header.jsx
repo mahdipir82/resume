@@ -12,7 +12,7 @@ const navItems = [
   { id: 'contact', label: 'تماس با من' },
 ]
 
-export function Header() {
+export function Header({ initials = 'MP' }) {
   const [isOpen, setIsOpen] = useState(false)
   const sectionIds = useMemo(() => navItems.map((item) => item.id), [])
   const activeSection = useActiveSection(sectionIds)
@@ -43,7 +43,7 @@ export function Header() {
           onClick={() => handleNavigation('home')}
           type="button"
         >
-          MP
+          {initials}
         </button>
 
         <div className="hidden items-center gap-1 lg:flex">

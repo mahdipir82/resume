@@ -4,20 +4,20 @@ import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
 import { scrollToSection } from '../../utils/scrollToSection'
 
-const socialLinks = [
-  {
-    href: 'https://github.com/mahdipir82',
-    icon: Code2,
-    label: 'GitHub',
-  },
-  {
-    href: 'https://www.linkedin.com/in/mahdi-pirhayati/',
-    icon: BriefcaseBusiness,
-    label: 'LinkedIn',
-  },
-]
+export function Hero({ content }) {
+  const socialLinks = [
+    {
+      href: content.githubUrl,
+      icon: Code2,
+      label: 'GitHub',
+    },
+    {
+      href: content.linkedinUrl,
+      icon: BriefcaseBusiness,
+      label: 'LinkedIn',
+    },
+  ].filter((link) => link.href)
 
-export function Hero() {
   return (
     <section
       className="mx-auto grid min-h-[calc(100vh-77px)] max-w-6xl scroll-mt-28 items-center gap-12 px-5 py-20 md:px-6 lg:grid-cols-[1.05fr_0.95fr]"
@@ -29,18 +29,16 @@ export function Hero() {
         transition={{ duration: 0.55, ease: 'easeOut' }}
       >
         <p className="inline-flex rounded-lg border border-cyan-300/20 bg-cyan-300/10 px-3 py-1.5 text-sm font-semibold text-cyan-200">
-          توسعه‌دهنده بک‌اند Python و Django
+          {content.role}
         </p>
         <h1 className="mt-6 text-4xl font-bold leading-tight text-white md:text-6xl">
-          مهدی پیرحیاتی
+          {content.fullName}
         </h1>
         <p className="mt-5 max-w-2xl text-xl font-semibold leading-9 text-slate-200">
-          ساخت APIهای تمیز، بک‌اندهای قابل توسعه و تجربه‌های Full Stack کاربردی.
+          {content.heroSubtitle}
         </p>
         <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 md:text-lg">
-          من دانشجوی مهندسی نرم‌افزار و علاقه‌مند به توسعه وب هستم. تمرکز اصلی
-          من روی Python، Django، Django REST Framework و PostgreSQL است و با
-          ساخت پروژه‌های واقعی برای ورود حرفه‌ای به بازار کار آماده می‌شوم.
+          {content.heroDescription}
         </p>
 
         <div className="mt-8 flex flex-wrap gap-3">
@@ -103,10 +101,10 @@ export function Hero() {
               <span className="h-3 w-3 rounded-full bg-emerald-400" />
             </div>
             <pre className="overflow-hidden whitespace-pre-wrap text-sm leading-7 text-slate-300">
-              <code>{`class MahdiPirhayati:
+              <code>{`class ${content.fullName.replaceAll(' ', '')}:
     focus = ["Django", "REST API", "PostgreSQL"]
     learning = ["React", "Full Stack"]
-    location = "Malayer, Iran"
+    location = "${content.location}"
 
     def build(self):
         return "clean backend systems"`}</code>
@@ -116,13 +114,13 @@ export function Hero() {
             <div className="rounded-lg border border-white/10 bg-white/5 p-4">
               <MapPin aria-hidden="true" className="mb-3 text-cyan-300" size={20} />
               <p className="text-sm text-slate-400">موقعیت</p>
-              <p className="mt-1 font-semibold text-white">ملایر، ایران</p>
+              <p className="mt-1 font-semibold text-white">{content.location}</p>
             </div>
             <div className="rounded-lg border border-white/10 bg-white/5 p-4">
               <Mail aria-hidden="true" className="mb-3 text-cyan-300" size={20} />
               <p className="text-sm text-slate-400">ایمیل</p>
               <p className="mt-1 break-all text-sm font-semibold text-white">
-                mahdipirhayati1382@gmail.com
+                {content.email}
               </p>
             </div>
           </div>

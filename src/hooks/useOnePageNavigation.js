@@ -1,7 +1,7 @@
 import { useLayoutEffect } from 'react'
 
 export function useOnePageNavigation() {
-  const wheelSpeed = 2.6
+  const wheelSpeed = 3.4
 
   useLayoutEffect(() => {
     if (!window.location.hash) return
