@@ -15,9 +15,19 @@
 
 ```bash
 npm install
+python -m pip install -r requirements.txt
+python backend/manage.py migrate
 ```
 
 ## Development
+
+در یک ترمینال بک‌اند را اجرا کنید:
+
+```bash
+npm run backend:dev
+```
+
+در ترمینال دیگر فرانت‌اند را اجرا کنید:
 
 ```bash
 npm run dev
@@ -34,6 +44,26 @@ npm run lint
 ```bash
 npm run build
 ```
+
+## Backend API
+
+بک‌اند با Django و Django REST Framework ساخته شده و روی این آدرس اجرا می‌شود:
+
+```text
+http://127.0.0.1:8000/api
+```
+
+Endpointهای اصلی:
+
+- `GET /api/site-content/`
+- `PUT /api/site-content/`
+- `POST /api/site-content/reset/`
+- `GET /api/admin/status/`
+- `POST /api/admin/setup/`
+- `POST /api/admin/login/`
+- `POST /api/admin/logout/`
+
+پنل ادمین سایت برای ذخیره تنظیمات باید به بک‌اند وصل باشد. اولین بار از داخل پنل یک رمز ادمین می‌سازید؛ رمز در دیتابیس Django به‌صورت هش‌شده ذخیره می‌شود.
 
 ## Preview Production Build
 
@@ -106,3 +136,4 @@ public/resume.pdf
 - فایل‌های `.env` و `.env.*` در Git نادیده گرفته می‌شوند.
 - هیچ API Key، Token یا اطلاعات محرمانه‌ای در کد قرار ندهید.
 - پوشه‌های `node_modules` و `dist` نباید Commit شوند.
+- فایل `backend/db.sqlite3` دیتابیس محلی است و Commit نمی‌شود.

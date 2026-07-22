@@ -1,33 +1,39 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { api } from '../api/client'
 import { defaultSiteContent } from '../data/siteContent'
-
-const storageKey = 'mahdi-portfolio-content'
 
 export function useSiteContent() {
   const [content, setContent] = useState(defaultSiteContent)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
 
-  useEffect(() => {
+  const loadContent = useCallback(async () => {
     try {
-      const savedContent = window.localStorage.getItem(storageKey)
-
-      if (savedContent) {
-        setContent({ ...defaultSiteContent, ...JSON.parse(savedContent) })
-      }
+      setError('')
+      const remoteContent = await api.getSiteContent()
+      setContent({ ...defaultSiteContent, ...remoteContent })
     } catch {
+      setError('اتصال به بک‌اند برقرار نشد؛ نسخه پیش‌فرض نمایش داده می‌شود.')
       setContent(defaultSiteContent)
+    } finally {
+      setIsLoading(false)
     }
   }, [])
 
-  const saveContent = (nextContent) => {
+  useEffect(() => {
+    loadContent()
+  }, [loadContent])
+
+  const saveContent = async (nextContent) => {
     const normalizedContent = { ...defaultSiteContent, ...nextContent }
-    setContent(normalizedContent)
-    window.localStorage.setItem(storageKey, JSON.stringify(normalizedContent))
+    const savedContent = await api.saveSiteContent(normalizedContent)
+    setContent({ ...defaultSiteContent, ...savedContent })
   }
 
-  const resetContent = () => {
-    setContent(defaultSiteContent)
-    window.localStorage.removeItem(storageKey)
+  const resetContent = async () => {
+    const resetRemoteContent = await api.resetSiteContent()
+    setContent({ ...defaultSiteContent, ...resetRemoteContent })
   }
 
-  return { content, resetContent, saveContent }
+  return { content, error, isLoading, reloadContent: loadContent, resetContent, saveContent }
 }

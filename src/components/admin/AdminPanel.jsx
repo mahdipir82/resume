@@ -1,10 +1,8 @@
 import { KeyRound, LogOut, RotateCcw, Save, Settings, ShieldCheck, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { api } from '../../api/client'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
-
-const passwordStorageKey = 'mahdi-portfolio-admin-password'
-const sessionStorageKey = 'mahdi-portfolio-admin-session'
 
 const fields = [
   { key: 'fullName', label: 'نام کامل' },
@@ -30,15 +28,6 @@ const fields = [
   { key: 'contactDescription', label: 'توضیح تماس', multiline: true },
 ]
 
-async function hashPassword(password) {
-  const encodedPassword = new TextEncoder().encode(password)
-  const hashBuffer = await window.crypto.subtle.digest('SHA-256', encodedPassword)
-
-  return Array.from(new Uint8Array(hashBuffer))
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('')
-}
-
 export function AdminPanel({ content, onReset, onSave }) {
   const [isOpen, setIsOpen] = useState(false)
   const [draft, setDraft] = useState(content)
@@ -48,14 +37,22 @@ export function AdminPanel({ content, onReset, onSave }) {
   const [authError, setAuthError] = useState('')
   const [hasPassword, setHasPassword] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isBusy, setIsBusy] = useState(false)
 
   useEffect(() => {
     setDraft(content)
   }, [content])
 
   useEffect(() => {
-    setHasPassword(Boolean(window.localStorage.getItem(passwordStorageKey)))
-    setIsAuthenticated(window.sessionStorage.getItem(sessionStorageKey) === 'true')
+    if (!isOpen) return
+
+    api
+      .getAdminStatus()
+      .then((result) => {
+        setHasPassword(result.hasPassword)
+        setIsAuthenticated(result.authenticated)
+      })
+      .catch(() => setAuthError('اتصال به بک‌اند برقرار نشد.'))
   }, [isOpen])
 
   const updateDraft = (key, value) => {
@@ -63,15 +60,35 @@ export function AdminPanel({ content, onReset, onSave }) {
     setStatus('')
   }
 
-  const saveDraft = (event) => {
+  const saveDraft = async (event) => {
     event.preventDefault()
-    onSave(draft)
-    setStatus('تغییرات ذخیره شد.')
+    setIsBusy(true)
+    setStatus('')
+
+    try {
+      await onSave(draft)
+      setStatus('تغییرات در بک‌اند ذخیره شد.')
+    } catch {
+      setStatus('برای ذخیره باید وارد پنل شده باشید.')
+      setIsAuthenticated(false)
+    } finally {
+      setIsBusy(false)
+    }
   }
 
-  const resetDraft = () => {
-    onReset()
-    setStatus('محتوا به حالت اولیه برگشت.')
+  const resetDraft = async () => {
+    setIsBusy(true)
+    setStatus('')
+
+    try {
+      await onReset()
+      setStatus('محتوا در بک‌اند به حالت اولیه برگشت.')
+    } catch {
+      setStatus('برای بازنشانی باید وارد پنل شده باشید.')
+      setIsAuthenticated(false)
+    } finally {
+      setIsBusy(false)
+    }
   }
 
   const createPassword = async (event) => {
@@ -88,47 +105,35 @@ export function AdminPanel({ content, onReset, onSave }) {
       return
     }
 
-    const passwordHash = await hashPassword(password)
-    window.localStorage.setItem(passwordStorageKey, passwordHash)
-    window.sessionStorage.setItem(sessionStorageKey, 'true')
-    setHasPassword(true)
-    setIsAuthenticated(true)
-    setPassword('')
-    setConfirmPassword('')
-    setStatus('رمز پنل مدیریت ساخته شد.')
+    try {
+      await api.setupAdmin(password)
+      setHasPassword(true)
+      setIsAuthenticated(true)
+      setPassword('')
+      setConfirmPassword('')
+      setStatus('رمز ادمین در بک‌اند ساخته شد.')
+    } catch (error) {
+      setAuthError(error.message)
+    }
   }
 
   const login = async (event) => {
     event.preventDefault()
     setAuthError('')
 
-    const savedHash = window.localStorage.getItem(passwordStorageKey)
-    const passwordHash = await hashPassword(password)
-
-    if (passwordHash !== savedHash) {
+    try {
+      await api.loginAdmin(password)
+      setIsAuthenticated(true)
+      setPassword('')
+    } catch {
       setAuthError('رمز واردشده درست نیست.')
-      return
     }
-
-    window.sessionStorage.setItem(sessionStorageKey, 'true')
-    setIsAuthenticated(true)
-    setPassword('')
   }
 
-  const logout = () => {
-    window.sessionStorage.removeItem(sessionStorageKey)
+  const logout = async () => {
+    await api.logoutAdmin()
     setIsAuthenticated(false)
     setStatus('از پنل خارج شدید.')
-  }
-
-  const resetPassword = () => {
-    window.localStorage.removeItem(passwordStorageKey)
-    window.sessionStorage.removeItem(sessionStorageKey)
-    setHasPassword(false)
-    setIsAuthenticated(false)
-    setPassword('')
-    setConfirmPassword('')
-    setAuthError('')
   }
 
   const renderAuth = () => (
@@ -136,8 +141,8 @@ export function AdminPanel({ content, onReset, onSave }) {
       <div className="rounded-lg border border-cyan-300/20 bg-cyan-300/10 p-4 text-sm leading-7 text-cyan-50">
         <ShieldCheck aria-hidden="true" className="mb-3 text-cyan-200" size={22} />
         {hasPassword
-          ? 'برای ورود به پنل مدیریت رمز را وارد کنید.'
-          : 'برای اولین استفاده، یک رمز محلی برای پنل مدیریت بسازید. این رمز داخل کد یا GitHub ذخیره نمی‌شود.'}
+          ? 'برای ورود به پنل مدیریت رمز بک‌اند را وارد کنید.'
+          : 'برای اولین استفاده، یک رمز ادمین بسازید. رمز در دیتابیس Django به‌صورت هش‌شده ذخیره می‌شود.'}
       </div>
       <label className="block">
         <span className="text-sm font-semibold text-slate-200">رمز پنل مدیریت</span>
@@ -164,17 +169,10 @@ export function AdminPanel({ content, onReset, onSave }) {
         </label>
       ) : null}
       {authError ? <p className="text-sm text-rose-300">{authError}</p> : null}
-      <div className="flex flex-wrap gap-3">
-        <Button as="button" icon={null} type="submit">
-          <KeyRound aria-hidden="true" size={18} />
-          {hasPassword ? 'ورود به پنل' : 'ساخت رمز و ورود'}
-        </Button>
-        {hasPassword ? (
-          <Button as="button" icon={null} onClick={resetPassword} type="button" variant="ghost">
-            فراموشی رمز
-          </Button>
-        ) : null}
-      </div>
+      <Button as="button" icon={null} type="submit">
+        <KeyRound aria-hidden="true" size={18} />
+        {hasPassword ? 'ورود به پنل' : 'ساخت رمز و ورود'}
+      </Button>
     </form>
   )
 
@@ -205,7 +203,7 @@ export function AdminPanel({ content, onReset, onSave }) {
                     ویرایش محتوای سایت
                   </h2>
                   <p className="mt-2 text-sm leading-7 text-slate-400">
-                    پنل با رمز محلی محافظت می‌شود و تغییرات روی همین مرورگر ذخیره می‌ماند.
+                    تنظیمات از API بک‌اند خوانده می‌شود و در دیتابیس ذخیره می‌ماند.
                   </p>
                 </div>
                 <button
@@ -255,12 +253,13 @@ export function AdminPanel({ content, onReset, onSave }) {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3 border-t border-white/10 pt-5">
-                    <Button as="button" icon={null} type="submit">
+                    <Button as="button" disabled={isBusy} icon={null} type="submit">
                       <Save aria-hidden="true" size={18} />
-                      ذخیره تغییرات
+                      ذخیره در بک‌اند
                     </Button>
                     <Button
                       as="button"
+                      disabled={isBusy}
                       icon={null}
                       onClick={resetDraft}
                       type="button"
