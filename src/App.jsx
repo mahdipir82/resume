@@ -100,7 +100,7 @@ function App() {
       >
         رفتن به محتوای اصلی
       </button>
-      <Header initials={content.initials} />
+      <Header initials={content.initials} logoUrl={content.logoUrl} />
       <main className="pt-20" id="main-content">
         <Hero content={content} />
         <About content={content} />

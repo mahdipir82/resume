@@ -10,8 +10,9 @@ import { Card } from '../ui/Card'
 const fields = [
   { key: 'siteTitle', label: 'عنوان تب مرورگر' },
   { key: 'faviconUrl', label: 'آدرس آیکن تب مرورگر', dir: 'ltr' },
+  { key: 'logoUrl', label: 'آدرس تصویر لوگوی بالای سایت', dir: 'ltr' },
   { key: 'fullName', label: 'نام کامل' },
-  { key: 'initials', label: 'لوگوی بالای سایت' },
+  { key: 'initials', label: 'متن جایگزین لوگوی بالای سایت' },
   { key: 'role', label: 'عنوان شغلی' },
   { key: 'heroSubtitle', label: 'توضیح کوتاه زیر نام' },
   { key: 'heroDescription', label: 'متن معرفی Hero', multiline: true },

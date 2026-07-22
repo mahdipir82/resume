@@ -12,7 +12,7 @@ const navItems = [
   { id: 'contact', label: 'تماس با من', icon: Mail },
 ]
 
-export function Header({ initials = 'MP' }) {
+export function Header({ initials = 'MP', logoUrl = '' }) {
   const [isOpen, setIsOpen] = useState(false)
   const [clickedSection, setClickedSection] = useState(null)
   const sectionIds = useMemo(() => navItems.map((item) => item.id), [])
@@ -34,7 +34,7 @@ export function Header({ initials = 'MP' }) {
   }
 
   const linkClass = (id) =>
-    `inline-flex h-11 w-11 items-center justify-center rounded-lg text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300 ${
+    `inline-flex h-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300 ${
       visibleActiveSection === id
         ? 'bg-cyan-300/10 text-cyan-200'
         : 'text-slate-300 hover:bg-white/5 hover:text-white'
@@ -50,11 +50,15 @@ export function Header({ initials = 'MP' }) {
         className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 md:px-6"
       >
         <button
-          className="rounded-lg text-lg font-bold tracking-normal text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
+          className="inline-flex h-11 min-w-11 items-center justify-center rounded-lg border border-cyan-300/25 bg-cyan-300/10 px-3 text-lg font-bold tracking-normal text-white transition hover:bg-cyan-300/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
           onClick={() => handleNavigation('home')}
           type="button"
         >
-          {initials}
+          {logoUrl ? (
+            <img alt="لوگوی سایت" className="h-7 w-7 object-contain" src={logoUrl} />
+          ) : (
+            initials
+          )}
         </button>
 
         <div className="hidden items-center gap-1 lg:flex">
@@ -71,6 +75,7 @@ export function Header({ initials = 'MP' }) {
                 type="button"
               >
                 <Icon aria-hidden="true" size={20} />
+                <span>{item.label}</span>
               </button>
             )
           })}
@@ -105,9 +110,10 @@ export function Header({ initials = 'MP' }) {
                   onClick={() => handleNavigation(item.id)}
                   title={item.label}
                   type="button"
-                >
-                  <Icon aria-hidden="true" size={20} />
-                </button>
+                  >
+                    <Icon aria-hidden="true" size={20} />
+                    <span>{item.label}</span>
+                  </button>
               )
             })}
           </div>
