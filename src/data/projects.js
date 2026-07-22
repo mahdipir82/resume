@@ -1,4 +1,4 @@
-export const projects = [
+export const defaultProjects = [
   {
     id: 'code82-commerce',
     title: 'Code82-Commerce',
@@ -23,7 +23,6 @@ export const projects = [
     liveUrl: '',
     status: 'در حال توسعه',
     featured: true,
+    sortOrder: 0,
   },
 ]
-
-// برای افزودن پروژه جدید، یک آبجکت با همین ساختار به آرایه بالا اضافه کنید.

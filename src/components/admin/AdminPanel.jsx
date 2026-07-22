@@ -1,6 +1,7 @@
 import { KeyRound, LogOut, RotateCcw, Save, Settings, ShieldCheck, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { api } from '../../api/client'
+import { ProjectManager } from './ProjectManager'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
 
@@ -28,7 +29,15 @@ const fields = [
   { key: 'contactDescription', label: 'توضیح تماس', multiline: true },
 ]
 
-export function AdminPanel({ content, onReset, onSave }) {
+export function AdminPanel({
+  content,
+  onCreateProject,
+  onDeleteProject,
+  onReset,
+  onSave,
+  onUpdateProject,
+  projects,
+}) {
   const [isOpen, setIsOpen] = useState(false)
   const [draft, setDraft] = useState(content)
   const [status, setStatus] = useState('')
@@ -67,7 +76,7 @@ export function AdminPanel({ content, onReset, onSave }) {
 
     try {
       await onSave(draft)
-      setStatus('تغییرات در بک‌اند ذخیره شد.')
+      setStatus('تنظیمات در بک‌اند ذخیره شد.')
     } catch {
       setStatus('برای ذخیره باید وارد پنل شده باشید.')
       setIsAuthenticated(false)
@@ -82,7 +91,7 @@ export function AdminPanel({ content, onReset, onSave }) {
 
     try {
       await onReset()
-      setStatus('محتوا در بک‌اند به حالت اولیه برگشت.')
+      setStatus('تنظیمات به حالت اولیه برگشت.')
     } catch {
       setStatus('برای بازنشانی باید وارد پنل شده باشید.')
       setIsAuthenticated(false)
@@ -203,7 +212,7 @@ export function AdminPanel({ content, onReset, onSave }) {
                     ویرایش محتوای سایت
                   </h2>
                   <p className="mt-2 text-sm leading-7 text-slate-400">
-                    تنظیمات از API بک‌اند خوانده می‌شود و در دیتابیس ذخیره می‌ماند.
+                    تنظیمات و پروژه‌ها از API بک‌اند خوانده می‌شوند و در دیتابیس ذخیره می‌مانند.
                   </p>
                 </div>
                 <button
@@ -219,58 +228,66 @@ export function AdminPanel({ content, onReset, onSave }) {
               {!isAuthenticated ? (
                 renderAuth()
               ) : (
-                <form className="grid gap-5" onSubmit={saveDraft}>
-                  <div className="flex justify-end">
-                    <Button as="button" icon={null} onClick={logout} type="button" variant="ghost">
-                      <LogOut aria-hidden="true" size={18} />
-                      خروج از پنل
-                    </Button>
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {fields.map((field) => (
-                      <label
-                        className={field.multiline ? 'block md:col-span-2' : 'block'}
-                        key={field.key}
-                      >
-                        <span className="text-sm font-semibold text-slate-200">{field.label}</span>
-                        {field.multiline ? (
-                          <textarea
-                            className="mt-2 min-h-28 w-full resize-y rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 leading-8 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
-                            dir={field.dir ?? 'rtl'}
-                            onChange={(event) => updateDraft(field.key, event.target.value)}
-                            value={draft[field.key] ?? ''}
-                          />
-                        ) : (
-                          <input
-                            className="mt-2 w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
-                            dir={field.dir ?? 'rtl'}
-                            onChange={(event) => updateDraft(field.key, event.target.value)}
-                            value={draft[field.key] ?? ''}
-                          />
-                        )}
-                      </label>
-                    ))}
-                  </div>
+                <div className="grid gap-6">
+                  <form className="grid gap-5" onSubmit={saveDraft}>
+                    <div className="flex justify-end">
+                      <Button as="button" icon={null} onClick={logout} type="button" variant="ghost">
+                        <LogOut aria-hidden="true" size={18} />
+                        خروج از پنل
+                      </Button>
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      {fields.map((field) => (
+                        <label
+                          className={field.multiline ? 'block md:col-span-2' : 'block'}
+                          key={field.key}
+                        >
+                          <span className="text-sm font-semibold text-slate-200">{field.label}</span>
+                          {field.multiline ? (
+                            <textarea
+                              className="mt-2 min-h-28 w-full resize-y rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 leading-8 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
+                              dir={field.dir ?? 'rtl'}
+                              onChange={(event) => updateDraft(field.key, event.target.value)}
+                              value={draft[field.key] ?? ''}
+                            />
+                          ) : (
+                            <input
+                              className="mt-2 w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
+                              dir={field.dir ?? 'rtl'}
+                              onChange={(event) => updateDraft(field.key, event.target.value)}
+                              value={draft[field.key] ?? ''}
+                            />
+                          )}
+                        </label>
+                      ))}
+                    </div>
 
-                  <div className="flex flex-wrap items-center gap-3 border-t border-white/10 pt-5">
-                    <Button as="button" disabled={isBusy} icon={null} type="submit">
-                      <Save aria-hidden="true" size={18} />
-                      ذخیره در بک‌اند
-                    </Button>
-                    <Button
-                      as="button"
-                      disabled={isBusy}
-                      icon={null}
-                      onClick={resetDraft}
-                      type="button"
-                      variant="secondary"
-                    >
-                      <RotateCcw aria-hidden="true" size={18} />
-                      بازگشت به حالت اولیه
-                    </Button>
-                    {status ? <p className="text-sm text-cyan-200">{status}</p> : null}
-                  </div>
-                </form>
+                    <div className="flex flex-wrap items-center gap-3 border-t border-white/10 pt-5">
+                      <Button as="button" disabled={isBusy} icon={null} type="submit">
+                        <Save aria-hidden="true" size={18} />
+                        ذخیره تنظیمات
+                      </Button>
+                      <Button
+                        as="button"
+                        disabled={isBusy}
+                        icon={null}
+                        onClick={resetDraft}
+                        type="button"
+                        variant="secondary"
+                      >
+                        <RotateCcw aria-hidden="true" size={18} />
+                        بازگشت به حالت اولیه
+                      </Button>
+                      {status ? <p className="text-sm text-cyan-200">{status}</p> : null}
+                    </div>
+                  </form>
+                  <ProjectManager
+                    onCreate={onCreateProject}
+                    onDelete={onDeleteProject}
+                    onUpdate={onUpdateProject}
+                    projects={projects}
+                  />
+                </div>
               )}
             </Card>
           </div>

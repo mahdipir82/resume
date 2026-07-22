@@ -21,7 +21,14 @@ async function request(path, options = {}) {
 
 export const api = {
   getAdminStatus: () => request('/admin/status/'),
+  getProjects: () => request('/projects/'),
   getSiteContent: () => request('/site-content/'),
+  createProject: (project) =>
+    request('/projects/', {
+      body: JSON.stringify(project),
+      method: 'POST',
+    }),
+  deleteProject: (projectId) => request(`/projects/${projectId}/`, { method: 'DELETE' }),
   loginAdmin: (password) =>
     request('/admin/login/', {
       body: JSON.stringify({ password }),
@@ -32,6 +39,11 @@ export const api = {
   saveSiteContent: (content) =>
     request('/site-content/', {
       body: JSON.stringify(content),
+      method: 'PUT',
+    }),
+  updateProject: (project) =>
+    request(`/projects/${project.id}/`, {
+      body: JSON.stringify(project),
       method: 'PUT',
     }),
   setupAdmin: (password) =>

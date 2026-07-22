@@ -1,13 +1,11 @@
 import { useState } from 'react'
-import { ArrowLeft } from 'lucide-react'
-import { projects } from '../../data/projects'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
 import { ProjectVisual } from '../ui/ProjectVisual'
 import { SectionHeading } from '../ui/SectionHeading'
 import { ProjectModal } from './ProjectModal'
 
-export function Projects() {
+export function Projects({ isLoading = false, projects = [] }) {
   const [selectedProject, setSelectedProject] = useState(null)
 
   return (
@@ -15,8 +13,16 @@ export function Projects() {
       <SectionHeading
         eyebrow="پروژه‌ها"
         title="نمونه‌کاری که مسیر یادگیری و ساخت محصول را نشان می‌دهد."
-        description="فعلاً فقط پروژه واقعی ثبت شده نمایش داده می‌شود. برای اضافه کردن پروژه‌های بعدی کافی است فایل داده پروژه‌ها را ویرایش کنید."
+        description="پروژه‌ها از بک‌اند خوانده می‌شوند و هر پروژه‌ای که در پنل ادمین اضافه کنید اینجا نمایش داده می‌شود."
       />
+
+      {isLoading ? (
+        <Card className="p-6 text-slate-300">در حال دریافت پروژه‌ها از بک‌اند...</Card>
+      ) : null}
+
+      {!isLoading && projects.length === 0 ? (
+        <Card className="p-6 text-slate-300">هنوز پروژه‌ای ثبت نشده است.</Card>
+      ) : null}
 
       <div className="grid gap-6">
         {projects.map((project) => (
@@ -52,7 +58,6 @@ export function Projects() {
                 <div className="mt-6">
                   <Button as="button" onClick={() => setSelectedProject(project)} type="button">
                     مشاهده جزئیات
-                    <ArrowLeft aria-hidden="true" className="hidden" size={0} />
                   </Button>
                 </div>
               </div>

@@ -93,17 +93,30 @@ src/data/skills.js
 
 ## Add a New Project
 
-پروژه‌ها از فایل زیر خوانده می‌شوند:
+پروژه‌ها از بک‌اند خوانده می‌شوند و از داخل پنل ادمین قابل افزودن، ویرایش و حذف هستند.
+
+برای اضافه کردن پروژه:
+
+1. بک‌اند و فرانت‌اند را اجرا کنید.
+2. وارد پنل ادمین شوید.
+3. در بخش «مدیریت پروژه‌ها» اطلاعات پروژه را وارد کنید.
+4. روی «اضافه کردن پروژه» بزنید.
+
+Endpointهای پروژه:
 
 ```text
-src/data/projects.js
+GET /api/projects/
+POST /api/projects/
+PUT /api/projects/<id>/
+DELETE /api/projects/<id>/
 ```
 
-برای افزودن پروژه جدید، یک آبجکت با ساختار زیر به آرایه `projects` اضافه کنید:
+برای درخواست‌های `POST`، `PUT` و `DELETE` باید در پنل ادمین لاگین باشید.
+
+ساختار داده پروژه:
 
 ```js
 {
-  id: 'project-id',
   title: 'English Project Title',
   persianTitle: 'عنوان فارسی پروژه',
   shortDescription: 'توضیح کوتاه',
@@ -116,6 +129,7 @@ src/data/projects.js
   liveUrl: '',
   status: 'در حال توسعه',
   featured: false,
+  sortOrder: 0,
 }
 ```
 
