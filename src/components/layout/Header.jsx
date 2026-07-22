@@ -31,7 +31,7 @@ export function Header({ initials = 'MP' }) {
 
   return (
     <header
-      className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/65 backdrop-blur-xl"
+      className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-slate-950/80 shadow-2xl shadow-slate-950/20 backdrop-blur-xl"
       data-site-header
     >
       <nav
