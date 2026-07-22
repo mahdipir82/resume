@@ -7,8 +7,11 @@ import { Hero } from './components/sections/Hero'
 import { Projects } from './components/sections/Projects'
 import { Skills } from './components/sections/Skills'
 import { Timeline } from './components/sections/Timeline'
+import { useOnePageNavigation } from './hooks/useOnePageNavigation'
 
 function App() {
+  useOnePageNavigation()
+
   return (
     <PageShell>
       <a

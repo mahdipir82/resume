@@ -18,11 +18,11 @@ export function Header() {
 
   const scrollToSection = (event, item) => {
     event.preventDefault()
+    event.stopPropagation()
     const section = document.getElementById(item.id)
 
     if (section) {
       section.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      window.history.pushState(null, '', item.href)
     }
 
     setIsOpen(false)
