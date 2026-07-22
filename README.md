@@ -65,6 +65,40 @@ Endpointهای اصلی:
 
 پنل ادمین سایت برای ذخیره تنظیمات باید به بک‌اند وصل باشد. اولین بار از داخل پنل یک رمز ادمین می‌سازید؛ رمز در دیتابیس Django به‌صورت هش‌شده ذخیره می‌شود.
 
+## PostgreSQL
+
+برای ذخیره تنظیمات و پروژه‌ها در PostgreSQL، فایل `.env` را بر اساس `.env.example` بسازید:
+
+```text
+POSTGRES_DB=mahdi_portfolio
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your-postgres-password
+POSTGRES_HOST=127.0.0.1
+POSTGRES_PORT=5432
+```
+
+سپس دیتابیس را در PostgreSQL بسازید و Migrationها را اجرا کنید:
+
+```bash
+createdb -U postgres mahdi_portfolio
+npm run backend:migrate
+```
+
+اگر `POSTGRES_DB` تنظیم نشده باشد، Django برای توسعه محلی از SQLite استفاده می‌کند.
+
+## Theme Settings
+
+از داخل پنل ادمین می‌توانید این موارد را تغییر دهید و در دیتابیس ذخیره کنید:
+
+- رنگ شروع و پایان پس‌زمینه
+- رنگ Accent اصلی
+- رنگ نور پس‌زمینه
+- رنگ Accent دوم
+- رنگ میانی پس‌زمینه
+- فعال یا غیرفعال بودن انیمیشن
+- سرعت انیمیشن
+- شدت نور و ذرات
+
 ## Preview Production Build
 
 ```bash

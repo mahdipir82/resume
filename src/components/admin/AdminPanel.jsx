@@ -27,6 +27,15 @@ const fields = [
   { key: 'linkedinLabel', label: 'متن LinkedIn', dir: 'ltr' },
   { key: 'contactTitle', label: 'تیتر تماس' },
   { key: 'contactDescription', label: 'توضیح تماس', multiline: true },
+  { key: 'backgroundColor', label: 'رنگ شروع پس‌زمینه', type: 'color' },
+  { key: 'backgroundColorEnd', label: 'رنگ پایان پس‌زمینه', type: 'color' },
+  { key: 'accentColor', label: 'رنگ Accent اصلی', type: 'color' },
+  { key: 'accentSoftColor', label: 'رنگ نور پس‌زمینه', type: 'color' },
+  { key: 'secondaryAccentColor', label: 'رنگ Accent دوم', type: 'color' },
+  { key: 'cardTintColor', label: 'رنگ میانی پس‌زمینه', type: 'color' },
+  { key: 'animationEnabled', label: 'انیمیشن فعال باشد', type: 'checkbox' },
+  { key: 'animationSpeed', label: 'سرعت انیمیشن', type: 'number', min: 0.2, step: 0.1 },
+  { key: 'animationIntensity', label: 'شدت نور و ذرات', type: 'number', min: 0, step: 0.1 },
 ]
 
 export function AdminPanel({
@@ -243,18 +252,53 @@ export function AdminPanel({
                           key={field.key}
                         >
                           <span className="text-sm font-semibold text-slate-200">{field.label}</span>
-                          {field.multiline ? (
+                          {field.type === 'checkbox' ? (
+                            <label className="mt-2 flex items-center gap-3 rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3">
+                              <input
+                                checked={Boolean(draft[field.key])}
+                                className="h-4 w-4 accent-cyan-300"
+                                onChange={(event) => updateDraft(field.key, event.target.checked)}
+                                type="checkbox"
+                              />
+                              <span className="text-sm text-slate-300">فعال</span>
+                            </label>
+                          ) : field.multiline ? (
                             <textarea
                               className="mt-2 min-h-28 w-full resize-y rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 leading-8 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
                               dir={field.dir ?? 'rtl'}
                               onChange={(event) => updateDraft(field.key, event.target.value)}
                               value={draft[field.key] ?? ''}
                             />
+                          ) : field.type === 'color' ? (
+                            <div className="mt-2 flex items-center gap-3 rounded-lg border border-white/10 bg-slate-950/70 px-3 py-2">
+                              <input
+                                className="h-10 w-14 cursor-pointer rounded border border-white/10 bg-transparent"
+                                onChange={(event) => updateDraft(field.key, event.target.value)}
+                                type="color"
+                                value={draft[field.key] ?? '#67e8f9'}
+                              />
+                              <input
+                                className="min-w-0 flex-1 bg-transparent px-2 py-2 text-slate-100 outline-none"
+                                dir="ltr"
+                                onChange={(event) => updateDraft(field.key, event.target.value)}
+                                value={draft[field.key] ?? ''}
+                              />
+                            </div>
                           ) : (
                             <input
                               className="mt-2 w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
                               dir={field.dir ?? 'rtl'}
-                              onChange={(event) => updateDraft(field.key, event.target.value)}
+                              min={field.min}
+                              onChange={(event) =>
+                                updateDraft(
+                                  field.key,
+                                  field.type === 'number'
+                                    ? Number(event.target.value)
+                                    : event.target.value,
+                                )
+                              }
+                              step={field.step}
+                              type={field.type ?? 'text'}
                               value={draft[field.key] ?? ''}
                             />
                           )}

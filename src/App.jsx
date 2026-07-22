@@ -26,7 +26,7 @@ function App() {
   } = useProjects()
 
   return (
-    <PageShell>
+    <PageShell theme={content}>
       <AdminPanel
         content={content}
         onCreateProject={createProject}

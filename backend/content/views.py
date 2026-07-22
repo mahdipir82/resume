@@ -33,8 +33,10 @@ def get_singleton_content():
         defaults={'content': DEFAULT_SITE_CONTENT},
     )
 
-    if not site_content.content:
-        site_content.content = DEFAULT_SITE_CONTENT
+    merged_content = {**DEFAULT_SITE_CONTENT, **(site_content.content or {})}
+
+    if merged_content != site_content.content:
+        site_content.content = merged_content
         site_content.save(update_fields=['content', 'updated_at'])
 
     return site_content

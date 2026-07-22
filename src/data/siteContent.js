@@ -25,4 +25,13 @@ export const defaultSiteContent = {
   contactTitle: 'برای همکاری، کارآموزی یا گفت‌وگو درباره پروژه در دسترسم.',
   contactDescription:
     'فرم زیر پیام را از طریق برنامه ایمیل شما آماده می‌کند و هیچ کلید یا سرویس محرمانه‌ای در کد استفاده نشده است.',
+  backgroundColor: '#020817',
+  backgroundColorEnd: '#020617',
+  accentColor: '#67e8f9',
+  accentSoftColor: '#22d3ee',
+  secondaryAccentColor: '#8b5cf6',
+  cardTintColor: '#0f172a',
+  animationEnabled: true,
+  animationSpeed: 1,
+  animationIntensity: 1,
 }
