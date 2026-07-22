@@ -58,7 +58,7 @@ def get_singleton_content():
 
 
 def admin_exists():
-    return get_user_model().objects.filter(username='admin').exists()
+    return get_user_model().objects.filter(is_superuser=True).exists()
 
 
 def serialize_project(project):
@@ -221,13 +221,17 @@ def admin_setup(request):
     if admin_exists():
         return Response({'detail': 'Admin password already exists.'}, status=status.HTTP_409_CONFLICT)
 
+    username = request.data.get('username', 'admin').strip() or 'admin'
     password = request.data.get('password', '')
+
+    if len(username) < 3:
+        return Response({'detail': 'Username must be at least 3 characters.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if len(password) < 8:
         return Response({'detail': 'Password must be at least 8 characters.'}, status=status.HTTP_400_BAD_REQUEST)
 
     User = get_user_model()
-    user = User.objects.create_user(username='admin', password=password, is_staff=True, is_superuser=True)
+    user = User.objects.create_user(username=username, password=password, is_staff=True, is_superuser=True)
     login(request, user)
 
     return Response({'authenticated': True, 'hasPassword': True})
@@ -237,11 +241,12 @@ def admin_setup(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def admin_login(request):
+    username = request.data.get('username', '').strip()
     password = request.data.get('password', '')
-    user = authenticate(request, username='admin', password=password)
+    user = authenticate(request, username=username, password=password)
 
     if user is None:
-        return Response({'detail': 'Invalid password.'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'detail': 'Invalid username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
 
     login(request, user)
     return Response({'authenticated': True, 'hasPassword': True})

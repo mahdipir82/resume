@@ -18,7 +18,7 @@ import { scrollToSection } from './utils/scrollToSection'
 
 function App() {
   useOnePageNavigation()
-  const [adminOpenSignal, setAdminOpenSignal] = useState(0)
+  const [showAdminLauncher, setShowAdminLauncher] = useState(false)
   const { content, error, isLoading, resetContent, saveContent } = useSiteContent()
   const {
     createProject,
@@ -68,7 +68,7 @@ function App() {
   return (
     <PageShell theme={content}>
       <AdminPanel
-        openSignal={adminOpenSignal}
+        showLauncher={showAdminLauncher}
         content={content}
         onCreateProject={createProject}
         onCreateSkillGroup={createSkillGroup}
@@ -105,7 +105,7 @@ function App() {
       <Header
         initials={content.initials}
         logoUrl={content.logoUrl}
-        onLogoDoubleClick={() => setAdminOpenSignal((value) => value + 1)}
+        onLogoDoubleClick={() => setShowAdminLauncher((value) => !value)}
       />
       <main className="pt-20" id="main-content">
         <Hero content={content} />

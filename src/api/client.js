@@ -68,9 +68,9 @@ export const api = {
     request(`/skill-groups/${skillGroupId}/`, { method: 'DELETE' }),
   deleteTimelineItem: (timelineItemId) =>
     request(`/timeline-items/${timelineItemId}/`, { method: 'DELETE' }),
-  loginAdmin: (password) =>
+  loginAdmin: (username, password) =>
     request('/admin/login/', {
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ password, username }),
       method: 'POST',
     }),
   logoutAdmin: () => request('/admin/logout/', { method: 'POST' }),
@@ -95,9 +95,9 @@ export const api = {
       body: JSON.stringify(timelineItem),
       method: 'PUT',
     }),
-  setupAdmin: (password) =>
+  setupAdmin: (username, password) =>
     request('/admin/setup/', {
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ password, username }),
       method: 'POST',
     }),
 }

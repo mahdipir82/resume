@@ -44,7 +44,6 @@ const fields = [
 ]
 
 export function AdminPanel({
-  openSignal = 0,
   showLauncher = false,
   content,
   onCreateProject,
@@ -65,6 +64,7 @@ export function AdminPanel({
   const [isOpen, setIsOpen] = useState(false)
   const [draft, setDraft] = useState(content)
   const [status, setStatus] = useState('')
+  const [username, setUsername] = useState('admin')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [authError, setAuthError] = useState('')
@@ -75,12 +75,6 @@ export function AdminPanel({
   useEffect(() => {
     setDraft(content)
   }, [content])
-
-  useEffect(() => {
-    if (openSignal > 0) {
-      setIsOpen(true)
-    }
-  }, [openSignal])
 
   useEffect(() => {
     if (!isOpen) return
@@ -136,6 +130,11 @@ export function AdminPanel({
     event.preventDefault()
     setAuthError('')
 
+    if (username.trim().length < 3) {
+      setAuthError('نام کاربری باید حداقل ۳ کاراکتر باشد.')
+      return
+    }
+
     if (password.length < 8) {
       setAuthError('رمز باید حداقل ۸ کاراکتر باشد.')
       return
@@ -147,7 +146,7 @@ export function AdminPanel({
     }
 
     try {
-      await api.setupAdmin(password)
+      await api.setupAdmin(username.trim(), password)
       setHasPassword(true)
       setIsAuthenticated(true)
       setPassword('')
@@ -163,11 +162,11 @@ export function AdminPanel({
     setAuthError('')
 
     try {
-      await api.loginAdmin(password)
+      await api.loginAdmin(username.trim(), password)
       setIsAuthenticated(true)
       setPassword('')
     } catch {
-      setAuthError('رمز واردشده درست نیست.')
+      setAuthError('نام کاربری یا رمز عبور درست نیست.')
     }
   }
 
@@ -185,6 +184,16 @@ export function AdminPanel({
           ? 'برای ورود به پنل مدیریت رمز بک‌اند را وارد کنید.'
           : 'برای اولین استفاده، یک رمز ادمین بسازید. رمز در دیتابیس Django به‌صورت هش‌شده ذخیره می‌شود.'}
       </div>
+      <label className="block">
+        <span className="text-sm font-semibold text-slate-200">نام کاربری پنل مدیریت</span>
+        <input
+          autoComplete="username"
+          className="mt-2 w-full rounded-lg border border-white/10 bg-slate-950/70 px-4 py-3 text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/60 focus:ring-4 focus:ring-cyan-300/10"
+          dir="ltr"
+          onChange={(event) => setUsername(event.target.value)}
+          value={username}
+        />
+      </label>
       <label className="block">
         <span className="text-sm font-semibold text-slate-200">رمز پنل مدیریت</span>
         <input
