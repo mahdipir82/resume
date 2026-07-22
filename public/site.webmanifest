@@ -1,0 +1,17 @@
+{
+  "name": "رزومه مهدی پیرحیاتی",
+  "short_name": "Mahdi Portfolio",
+  "description": "Personal portfolio website for Mahdi Pirhayati.",
+  "dir": "rtl",
+  "lang": "fa",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "128x128",
+      "type": "image/svg+xml"
+    }
+  ]
+}
