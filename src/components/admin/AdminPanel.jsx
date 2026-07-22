@@ -2,6 +2,7 @@ import { KeyRound, LogOut, RotateCcw, Save, Settings, ShieldCheck, X } from 'luc
 import { useEffect, useState } from 'react'
 import { api } from '../../api/client'
 import { ProjectManager } from './ProjectManager'
+import { SkillManager } from './SkillManager'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
 
@@ -41,11 +42,15 @@ const fields = [
 export function AdminPanel({
   content,
   onCreateProject,
+  onCreateSkillGroup,
   onDeleteProject,
+  onDeleteSkillGroup,
   onReset,
   onSave,
   onUpdateProject,
+  onUpdateSkillGroup,
   projects,
+  skillGroups,
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [draft, setDraft] = useState(content)
@@ -332,6 +337,12 @@ export function AdminPanel({
                     onDelete={onDeleteProject}
                     onUpdate={onUpdateProject}
                     projects={projects}
+                  />
+                  <SkillManager
+                    onCreate={onCreateSkillGroup}
+                    onDelete={onDeleteSkillGroup}
+                    onUpdate={onUpdateSkillGroup}
+                    skillGroups={skillGroups}
                   />
                 </div>
               )}

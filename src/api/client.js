@@ -45,13 +45,21 @@ async function request(path, options = {}) {
 export const api = {
   getAdminStatus: () => request('/admin/status/'),
   getProjects: () => request('/projects/'),
+  getSkillGroups: () => request('/skill-groups/'),
   getSiteContent: () => request('/site-content/'),
   createProject: (project) =>
     request('/projects/', {
       body: JSON.stringify(project),
       method: 'POST',
     }),
+  createSkillGroup: (skillGroup) =>
+    request('/skill-groups/', {
+      body: JSON.stringify(skillGroup),
+      method: 'POST',
+    }),
   deleteProject: (projectId) => request(`/projects/${projectId}/`, { method: 'DELETE' }),
+  deleteSkillGroup: (skillGroupId) =>
+    request(`/skill-groups/${skillGroupId}/`, { method: 'DELETE' }),
   loginAdmin: (password) =>
     request('/admin/login/', {
       body: JSON.stringify({ password }),
@@ -67,6 +75,11 @@ export const api = {
   updateProject: (project) =>
     request(`/projects/${project.id}/`, {
       body: JSON.stringify(project),
+      method: 'PUT',
+    }),
+  updateSkillGroup: (skillGroup) =>
+    request(`/skill-groups/${skillGroup.id}/`, {
+      body: JSON.stringify(skillGroup),
       method: 'PUT',
     }),
   setupAdmin: (password) =>

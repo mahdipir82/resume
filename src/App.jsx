@@ -10,6 +10,7 @@ import { Skills } from './components/sections/Skills'
 import { Timeline } from './components/sections/Timeline'
 import { useOnePageNavigation } from './hooks/useOnePageNavigation'
 import { useProjects } from './hooks/useProjects'
+import { useSkillGroups } from './hooks/useSkillGroups'
 import { useSiteContent } from './hooks/useSiteContent'
 import { scrollToSection } from './utils/scrollToSection'
 
@@ -24,21 +25,33 @@ function App() {
     projectsError,
     updateProject,
   } = useProjects()
+  const {
+    createSkillGroup,
+    deleteSkillGroup,
+    isLoadingSkills,
+    skillGroups,
+    skillsError,
+    updateSkillGroup,
+  } = useSkillGroups()
 
   return (
     <PageShell theme={content}>
       <AdminPanel
         content={content}
         onCreateProject={createProject}
+        onCreateSkillGroup={createSkillGroup}
         onDeleteProject={deleteProject}
+        onDeleteSkillGroup={deleteSkillGroup}
         onReset={resetContent}
         onSave={saveContent}
         onUpdateProject={updateProject}
+        onUpdateSkillGroup={updateSkillGroup}
         projects={projects}
+        skillGroups={skillGroups}
       />
-      {error || projectsError ? (
+      {error || projectsError || skillsError ? (
         <div className="fixed inset-x-4 bottom-20 z-[80] mx-auto max-w-xl rounded-lg border border-amber-300/25 bg-amber-300/10 px-4 py-3 text-sm leading-7 text-amber-100 shadow-2xl shadow-black/20 backdrop-blur md:bottom-5">
-          {error || projectsError}
+          {error || projectsError || skillsError}
         </div>
       ) : null}
       {isLoading ? (
@@ -57,7 +70,7 @@ function App() {
       <main className="pt-20" id="main-content">
         <Hero content={content} />
         <About content={content} />
-        <Skills />
+        <Skills isLoading={isLoadingSkills} skillGroups={skillGroups} />
         <Projects isLoading={isLoadingProjects} projects={projects} />
         <Timeline />
         <Contact content={content} />
