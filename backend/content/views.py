@@ -166,7 +166,8 @@ def site_content(request):
     if not request.user.is_authenticated:
         return Response({'detail': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-    site_content_object.content = request.data
+    next_content = {**DEFAULT_SITE_CONTENT, **dict(request.data)}
+    site_content_object.content = next_content
     site_content_object.save(update_fields=['content', 'updated_at'])
     return Response(site_content_object.content)
 

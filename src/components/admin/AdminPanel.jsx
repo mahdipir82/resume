@@ -84,8 +84,9 @@ export function AdminPanel({
     setStatus('')
 
     try {
-      await onSave(draft)
-      setStatus('تنظیمات در بک‌اند ذخیره شد.')
+      const savedContent = await onSave(draft)
+      setDraft(savedContent ?? draft)
+      setStatus('تنظیمات ذخیره شد و روی سایت اعمال شد.')
     } catch {
       setStatus('برای ذخیره باید وارد پنل شده باشید.')
       setIsAuthenticated(false)
@@ -99,7 +100,8 @@ export function AdminPanel({
     setStatus('')
 
     try {
-      await onReset()
+      const resetContent = await onReset()
+      setDraft(resetContent ?? content)
       setStatus('تنظیمات به حالت اولیه برگشت.')
     } catch {
       setStatus('برای بازنشانی باید وارد پنل شده باشید.')

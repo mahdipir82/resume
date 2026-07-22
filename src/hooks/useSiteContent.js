@@ -27,12 +27,16 @@ export function useSiteContent() {
   const saveContent = async (nextContent) => {
     const normalizedContent = { ...defaultSiteContent, ...nextContent }
     const savedContent = await api.saveSiteContent(normalizedContent)
-    setContent({ ...defaultSiteContent, ...savedContent })
+    const mergedContent = { ...defaultSiteContent, ...savedContent }
+    setContent(mergedContent)
+    return mergedContent
   }
 
   const resetContent = async () => {
     const resetRemoteContent = await api.resetSiteContent()
-    setContent({ ...defaultSiteContent, ...resetRemoteContent })
+    const mergedContent = { ...defaultSiteContent, ...resetRemoteContent }
+    setContent(mergedContent)
+    return mergedContent
   }
 
   return { content, error, isLoading, reloadContent: loadContent, resetContent, saveContent }
