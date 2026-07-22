@@ -1,16 +1,108 @@
-# React + Vite
+# Mahdi Pirhayati Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+یک وب‌سایت رزومه و نمونه‌کار تک‌صفحه‌ای، فارسی و RTL برای مهدی پیرحیاتی.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React
+- Vite
+- Tailwind CSS 4
+- Framer Motion
+- Lucide React
+- JavaScript
 
-## React Compiler
+## Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install
+```
 
-## Expanding the Oxlint configuration
+## Development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+```bash
+npm run dev
+```
+
+## Lint
+
+```bash
+npm run lint
+```
+
+## Production Build
+
+```bash
+npm run build
+```
+
+## Preview Production Build
+
+```bash
+npm run preview
+```
+
+## Customize Personal Information
+
+اطلاعات اصلی در این فایل‌ها قرار دارد:
+
+- `src/components/sections/Hero.jsx`
+- `src/components/sections/About.jsx`
+- `src/components/sections/Contact.jsx`
+- `src/components/layout/Footer.jsx`
+- `index.html`
+
+## Edit Skills
+
+مهارت‌ها از فایل زیر خوانده می‌شوند:
+
+```text
+src/data/skills.js
+```
+
+برای تغییر سطح مهارت‌ها، مقدار `level` را ویرایش کنید. از درصدهای اغراق‌آمیز استفاده نشده است.
+
+## Add a New Project
+
+پروژه‌ها از فایل زیر خوانده می‌شوند:
+
+```text
+src/data/projects.js
+```
+
+برای افزودن پروژه جدید، یک آبجکت با ساختار زیر به آرایه `projects` اضافه کنید:
+
+```js
+{
+  id: 'project-id',
+  title: 'English Project Title',
+  persianTitle: 'عنوان فارسی پروژه',
+  shortDescription: 'توضیح کوتاه',
+  fullDescription: 'توضیح کامل',
+  image: '',
+  imageAlt: 'متن جایگزین تصویر',
+  technologies: ['Python', 'Django'],
+  features: ['ویژگی اول', 'ویژگی دوم'],
+  githubUrl: '',
+  liveUrl: '',
+  status: 'در حال توسعه',
+  featured: false,
+}
+```
+
+اگر `githubUrl` یا `liveUrl` خالی باشد، دکمه مربوط به آن نمایش داده نمی‌شود.
+
+## Resume PDF
+
+برای فعال شدن لینک دانلود رزومه، فایل رزومه را با نام زیر قرار دهید:
+
+```text
+public/resume.pdf
+```
+
+تا زمانی که این فایل وجود ندارد، دکمه رزومه به‌صورت غیرفعال نمایش داده می‌شود.
+
+## Security Notes
+
+- فایل‌های `.env` و `.env.*` در Git نادیده گرفته می‌شوند.
+- هیچ API Key، Token یا اطلاعات محرمانه‌ای در کد قرار ندهید.
+- پوشه‌های `node_modules` و `dist` نباید Commit شوند.
