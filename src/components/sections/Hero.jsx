@@ -47,13 +47,7 @@ export function Hero() {
           <Button href="#contact" variant="secondary">
             تماس با من
           </Button>
-          <Button
-            aria-disabled="true"
-            className="opacity-70"
-            href="#contact"
-            icon="download"
-            variant="ghost"
-          >
+          <Button as="button" className="cursor-not-allowed opacity-70" disabled icon="download" type="button" variant="ghost">
             رزومه به‌زودی
           </Button>
         </div>

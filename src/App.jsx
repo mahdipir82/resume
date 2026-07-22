@@ -11,8 +11,14 @@ import { Timeline } from './components/sections/Timeline'
 function App() {
   return (
     <PageShell>
+      <a
+        className="sr-only focus:not-sr-only focus:fixed focus:right-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-cyan-300 focus:px-4 focus:py-3 focus:font-semibold focus:text-slate-950"
+        href="#main-content"
+      >
+        رفتن به محتوای اصلی
+      </a>
       <Header />
-      <main>
+      <main id="main-content">
         <Hero />
         <About />
         <Skills />

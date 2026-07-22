@@ -11,6 +11,23 @@ export function ProjectModal({ project, onClose }) {
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') onClose()
+      if (event.key === 'Tab' && closeButtonRef.current) {
+        const focusableElements = Array.from(
+          document.querySelectorAll(
+            '[role="dialog"] button, [role="dialog"] a[href], [role="dialog"] textarea, [role="dialog"] input',
+          ),
+        )
+        const firstElement = focusableElements[0]
+        const lastElement = focusableElements[focusableElements.length - 1]
+
+        if (event.shiftKey && document.activeElement === firstElement) {
+          event.preventDefault()
+          lastElement.focus()
+        } else if (!event.shiftKey && document.activeElement === lastElement) {
+          event.preventDefault()
+          firstElement.focus()
+        }
+      }
     }
 
     document.body.style.overflow = 'hidden'

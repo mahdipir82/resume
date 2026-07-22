@@ -108,28 +108,62 @@ export function Contact() {
         </div>
 
         <Card className="p-5 md:p-6">
-          <form className="grid gap-4" onSubmit={handleSubmit}>
+          <form className="grid gap-4" noValidate onSubmit={handleSubmit}>
             <div className="grid gap-4 md:grid-cols-2">
               <label className="block text-sm font-semibold text-slate-200">
                 نام
-                <input className={inputClass} name="name" onChange={updateField} placeholder="نام شما" value={form.name} />
-                {errors.name ? <span className="mt-2 block text-xs text-rose-300">{errors.name}</span> : null}
+                <input
+                  aria-describedby={errors.name ? 'name-error' : undefined}
+                  aria-invalid={Boolean(errors.name)}
+                  className={inputClass}
+                  name="name"
+                  onChange={updateField}
+                  placeholder="نام شما"
+                  value={form.name}
+                />
+                {errors.name ? <span className="mt-2 block text-xs text-rose-300" id="name-error">{errors.name}</span> : null}
               </label>
               <label className="block text-sm font-semibold text-slate-200">
                 ایمیل
-                <input className={inputClass} dir="ltr" name="email" onChange={updateField} placeholder="you@example.com" type="email" value={form.email} />
-                {errors.email ? <span className="mt-2 block text-xs text-rose-300">{errors.email}</span> : null}
+                <input
+                  aria-describedby={errors.email ? 'email-error' : undefined}
+                  aria-invalid={Boolean(errors.email)}
+                  className={inputClass}
+                  dir="ltr"
+                  name="email"
+                  onChange={updateField}
+                  placeholder="you@example.com"
+                  type="email"
+                  value={form.email}
+                />
+                {errors.email ? <span className="mt-2 block text-xs text-rose-300" id="email-error">{errors.email}</span> : null}
               </label>
             </div>
             <label className="block text-sm font-semibold text-slate-200">
               موضوع
-              <input className={inputClass} name="subject" onChange={updateField} placeholder="موضوع پیام" value={form.subject} />
-              {errors.subject ? <span className="mt-2 block text-xs text-rose-300">{errors.subject}</span> : null}
+              <input
+                aria-describedby={errors.subject ? 'subject-error' : undefined}
+                aria-invalid={Boolean(errors.subject)}
+                className={inputClass}
+                name="subject"
+                onChange={updateField}
+                placeholder="موضوع پیام"
+                value={form.subject}
+              />
+              {errors.subject ? <span className="mt-2 block text-xs text-rose-300" id="subject-error">{errors.subject}</span> : null}
             </label>
             <label className="block text-sm font-semibold text-slate-200">
               پیام
-              <textarea className={`${inputClass} min-h-36 resize-y leading-8`} name="message" onChange={updateField} placeholder="پیام خود را بنویسید..." value={form.message} />
-              {errors.message ? <span className="mt-2 block text-xs text-rose-300">{errors.message}</span> : null}
+              <textarea
+                aria-describedby={errors.message ? 'message-error' : undefined}
+                aria-invalid={Boolean(errors.message)}
+                className={`${inputClass} min-h-36 resize-y leading-8`}
+                name="message"
+                onChange={updateField}
+                placeholder="پیام خود را بنویسید..."
+                value={form.message}
+              />
+              {errors.message ? <span className="mt-2 block text-xs text-rose-300" id="message-error">{errors.message}</span> : null}
             </label>
             <div>
               <Button as="button" type="submit">
