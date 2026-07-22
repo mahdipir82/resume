@@ -46,3 +46,17 @@ class SkillGroup(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class TimelineItem(models.Model):
+    title = models.CharField(max_length=180)
+    description = models.TextField(blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['sort_order', 'created_at']
+
+    def __str__(self):
+        return self.title

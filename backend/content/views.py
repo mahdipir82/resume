@@ -6,9 +6,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from .defaults import DEFAULT_SITE_CONTENT
-from .models import Project, SiteContent, SkillGroup
+from .models import Project, SiteContent, SkillGroup, TimelineItem
 from .project_defaults import DEFAULT_PROJECTS
 from .skill_defaults import DEFAULT_SKILL_GROUPS
+from .timeline_defaults import DEFAULT_TIMELINE_ITEMS
 
 
 PROJECT_FIELDS = [
@@ -31,6 +32,12 @@ SKILL_GROUP_FIELDS = [
     'title',
     'icon',
     'skills',
+    'sort_order',
+]
+
+TIMELINE_ITEM_FIELDS = [
+    'title',
+    'description',
     'sort_order',
 ]
 
@@ -164,6 +171,38 @@ def seed_skill_groups_if_empty():
 
     for skill_group_data in DEFAULT_SKILL_GROUPS:
         SkillGroup.objects.create(**skill_group_data)
+
+
+def serialize_timeline_item(timeline_item):
+    return {
+        'id': timeline_item.id,
+        'title': timeline_item.title,
+        'description': timeline_item.description,
+        'sortOrder': timeline_item.sort_order,
+    }
+
+
+def normalize_timeline_item_payload(payload):
+    return {
+        'title': payload.get('title', '').strip(),
+        'description': payload.get('description', '').strip(),
+        'sort_order': int(payload.get('sortOrder') or 0),
+    }
+
+
+def validate_timeline_item_payload(data):
+    if not data['title']:
+        return 'عنوان مرحله مسیر یادگیری الزامی است.'
+
+    return ''
+
+
+def seed_timeline_items_if_empty():
+    if TimelineItem.objects.exists():
+        return
+
+    for timeline_item_data in DEFAULT_TIMELINE_ITEMS:
+        TimelineItem.objects.create(**timeline_item_data)
 
 
 @api_view(['GET'])
@@ -347,3 +386,54 @@ def skill_group_detail(request, skill_group_id):
 
     skill_group.save()
     return Response(serialize_skill_group(skill_group))
+
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def timeline_items(request):
+    seed_timeline_items_if_empty()
+
+    if request.method == 'GET':
+        return Response([serialize_timeline_item(item) for item in TimelineItem.objects.all()])
+
+    if not request.user.is_authenticated:
+        return Response({'detail': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    timeline_item_data = normalize_timeline_item_payload(request.data)
+    validation_error = validate_timeline_item_payload(timeline_item_data)
+
+    if validation_error:
+        return Response({'detail': validation_error}, status=status.HTTP_400_BAD_REQUEST)
+
+    timeline_item = TimelineItem.objects.create(**timeline_item_data)
+    return Response(serialize_timeline_item(timeline_item), status=status.HTTP_201_CREATED)
+
+
+@csrf_exempt
+@api_view(['PUT', 'DELETE'])
+@permission_classes([AllowAny])
+def timeline_item_detail(request, timeline_item_id):
+    if not request.user.is_authenticated:
+        return Response({'detail': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        timeline_item = TimelineItem.objects.get(id=timeline_item_id)
+    except TimelineItem.DoesNotExist:
+        return Response({'detail': 'Timeline item not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        timeline_item.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    timeline_item_data = normalize_timeline_item_payload(request.data)
+    validation_error = validate_timeline_item_payload(timeline_item_data)
+
+    if validation_error:
+        return Response({'detail': validation_error}, status=status.HTTP_400_BAD_REQUEST)
+
+    for field in TIMELINE_ITEM_FIELDS:
+        setattr(timeline_item, field, timeline_item_data[field])
+
+    timeline_item.save()
+    return Response(serialize_timeline_item(timeline_item))

@@ -13,4 +13,6 @@ urlpatterns = [
     path('skill-groups/<int:skill_group_id>/', views.skill_group_detail),
     path('site-content/', views.site_content),
     path('site-content/reset/', views.reset_site_content),
+    path('timeline-items/', views.timeline_items),
+    path('timeline-items/<int:timeline_item_id>/', views.timeline_item_detail),
 ]

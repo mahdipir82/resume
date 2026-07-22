@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Project, SiteContent, SkillGroup
+from .models import Project, SiteContent, SkillGroup, TimelineItem
 
 
 @admin.register(SiteContent)
@@ -20,3 +20,10 @@ class SkillGroupAdmin(admin.ModelAdmin):
     list_display = ('title', 'icon', 'sort_order', 'updated_at')
     list_editable = ('icon', 'sort_order')
     search_fields = ('title',)
+
+
+@admin.register(TimelineItem)
+class TimelineItemAdmin(admin.ModelAdmin):
+    list_display = ('title', 'sort_order', 'updated_at')
+    list_editable = ('sort_order',)
+    search_fields = ('title', 'description')
