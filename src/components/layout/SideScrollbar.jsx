@@ -69,6 +69,14 @@ export function SideScrollbar() {
     })
   }
 
+  const scrollWithWheel = (event) => {
+    window.scrollBy({
+      behavior: 'auto',
+      left: 0,
+      top: event.deltaY,
+    })
+  }
+
   const startDrag = (event) => {
     event.preventDefault()
     isDraggingRef.current = true
@@ -81,13 +89,14 @@ export function SideScrollbar() {
   return (
     <div
       aria-label="اسکرول صفحه"
-      className="fixed left-3 top-1/2 z-[70] hidden h-[58vh] -translate-y-1/2 md:block"
+      className="fixed right-3 top-1/2 z-[70] hidden h-[58vh] -translate-y-1/2 md:block"
       role="presentation"
     >
       <button
         aria-label="رفتن به محل کلیک‌شده در صفحه"
         className="relative h-full w-4 rounded-full border border-white/10 bg-white/5 p-0 shadow-lg shadow-black/20 backdrop-blur transition hover:border-cyan-300/35 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
         onClick={scrollFromTrack}
+        onWheel={scrollWithWheel}
         ref={trackRef}
         type="button"
       >
