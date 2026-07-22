@@ -1,4 +1,5 @@
 export const defaultSiteContent = {
+  siteTitle: 'مهدی پیرحیاتی | توسعه‌دهنده بک‌اند Python و Django',
   fullName: 'مهدی پیرحیاتی',
   initials: 'MP',
   role: 'توسعه‌دهنده بک‌اند Python و Django',

@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { PageShell } from './components/layout/PageShell'
 import { AdminPanel } from './components/admin/AdminPanel'
 import { Footer } from './components/layout/Footer'
@@ -42,6 +43,10 @@ function App() {
     timelineItems,
     updateTimelineItem,
   } = useTimelineItems()
+
+  useEffect(() => {
+    document.title = content.siteTitle || `${content.fullName} | ${content.role}`
+  }, [content.fullName, content.role, content.siteTitle])
 
   return (
     <PageShell theme={content}>
