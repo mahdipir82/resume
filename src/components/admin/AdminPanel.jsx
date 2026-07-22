@@ -9,6 +9,7 @@ import { Card } from '../ui/Card'
 
 const fields = [
   { key: 'siteTitle', label: 'عنوان تب مرورگر' },
+  { key: 'faviconUrl', label: 'آدرس آیکن تب مرورگر', dir: 'ltr' },
   { key: 'fullName', label: 'نام کامل' },
   { key: 'initials', label: 'لوگوی بالای سایت' },
   { key: 'role', label: 'عنوان شغلی' },

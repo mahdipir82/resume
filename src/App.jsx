@@ -48,6 +48,22 @@ function App() {
     document.title = content.siteTitle || `${content.fullName} | ${content.role}`
   }, [content.fullName, content.role, content.siteTitle])
 
+  useEffect(() => {
+    const faviconUrl = content.faviconUrl || '/favicon.svg'
+    let faviconLink = document.querySelector("link[rel='icon']")
+
+    if (!faviconLink) {
+      faviconLink = document.createElement('link')
+      faviconLink.rel = 'icon'
+      document.head.appendChild(faviconLink)
+    }
+
+    faviconLink.href = faviconUrl
+
+    const extension = faviconUrl.split('?')[0].split('.').pop()
+    faviconLink.type = extension === 'svg' ? 'image/svg+xml' : ''
+  }, [content.faviconUrl])
+
   return (
     <PageShell theme={content}>
       <AdminPanel
