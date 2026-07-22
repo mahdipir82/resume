@@ -1,15 +1,15 @@
-import { Menu, X } from 'lucide-react'
+import { BriefcaseBusiness, Home, Mail, Menu, Route, Sparkles, UserRound, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useActiveSection } from '../../hooks/useActiveSection'
 import { scrollToSection } from '../../utils/scrollToSection'
 
 const navItems = [
-  { id: 'home', label: 'خانه' },
-  { id: 'about', label: 'درباره من' },
-  { id: 'skills', label: 'مهارت‌ها' },
-  { id: 'projects', label: 'پروژه‌ها' },
-  { id: 'timeline', label: 'مسیر یادگیری' },
-  { id: 'contact', label: 'تماس با من' },
+  { id: 'home', label: 'خانه', icon: Home },
+  { id: 'about', label: 'درباره من', icon: UserRound },
+  { id: 'skills', label: 'مهارت‌ها', icon: Sparkles },
+  { id: 'projects', label: 'پروژه‌ها', icon: BriefcaseBusiness },
+  { id: 'timeline', label: 'مسیر یادگیری', icon: Route },
+  { id: 'contact', label: 'تماس با من', icon: Mail },
 ]
 
 export function Header({ initials = 'MP' }) {
@@ -34,7 +34,7 @@ export function Header({ initials = 'MP' }) {
   }
 
   const linkClass = (id) =>
-    `rounded-lg px-3 py-2 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300 ${
+    `inline-flex h-11 w-11 items-center justify-center rounded-lg text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300 ${
       visibleActiveSection === id
         ? 'bg-cyan-300/10 text-cyan-200'
         : 'text-slate-300 hover:bg-white/5 hover:text-white'
@@ -58,16 +58,22 @@ export function Header({ initials = 'MP' }) {
         </button>
 
         <div className="hidden items-center gap-1 lg:flex">
-          {navItems.map((item) => (
-            <button
-              className={linkClass(item.id)}
-              key={item.id}
-              onClick={() => handleNavigation(item.id)}
-              type="button"
-            >
-              {item.label}
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const Icon = item.icon
+
+            return (
+              <button
+                aria-label={item.label}
+                className={linkClass(item.id)}
+                key={item.id}
+                onClick={() => handleNavigation(item.id)}
+                title={item.label}
+                type="button"
+              >
+                <Icon aria-hidden="true" size={20} />
+              </button>
+            )
+          })}
         </div>
 
         <button
@@ -87,17 +93,23 @@ export function Header({ initials = 'MP' }) {
         }`}
       >
         <div className="min-h-0">
-          <div className="mx-auto flex max-w-6xl flex-col gap-1 px-5 py-3">
-            {navItems.map((item) => (
-              <button
-                className={linkClass(item.id)}
-                key={item.id}
-                onClick={() => handleNavigation(item.id)}
-                type="button"
-              >
-                {item.label}
-              </button>
-            ))}
+          <div className="mx-auto flex max-w-6xl flex-wrap justify-center gap-2 px-5 py-3">
+            {navItems.map((item) => {
+              const Icon = item.icon
+
+              return (
+                <button
+                  aria-label={item.label}
+                  className={linkClass(item.id)}
+                  key={item.id}
+                  onClick={() => handleNavigation(item.id)}
+                  title={item.label}
+                  type="button"
+                >
+                  <Icon aria-hidden="true" size={20} />
+                </button>
+              )
+            })}
           </div>
         </div>
       </div>
