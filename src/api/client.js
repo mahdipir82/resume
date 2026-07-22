@@ -1,4 +1,27 @@
-const apiBaseUrl = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api'
+const loopbackHosts = ['localhost', '127.0.0.1']
+
+function getApiBaseUrl() {
+  const fallbackHost = typeof window === 'undefined' ? '127.0.0.1' : window.location.hostname
+  const configuredUrl = import.meta.env.VITE_API_URL ?? `http://${fallbackHost}:8000/api`
+
+  if (typeof window === 'undefined') {
+    return configuredUrl.replace(/\/$/, '')
+  }
+
+  try {
+    const url = new URL(configuredUrl)
+
+    if (loopbackHosts.includes(url.hostname) && loopbackHosts.includes(window.location.hostname)) {
+      url.hostname = window.location.hostname
+    }
+
+    return url.toString().replace(/\/$/, '')
+  } catch {
+    return configuredUrl.replace(/\/$/, '')
+  }
+}
+
+const apiBaseUrl = getApiBaseUrl()
 
 async function request(path, options = {}) {
   const response = await fetch(`${apiBaseUrl}${path}`, {
