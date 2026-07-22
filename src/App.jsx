@@ -12,6 +12,7 @@ import { useOnePageNavigation } from './hooks/useOnePageNavigation'
 import { useProjects } from './hooks/useProjects'
 import { useSkillGroups } from './hooks/useSkillGroups'
 import { useSiteContent } from './hooks/useSiteContent'
+import { useTimelineItems } from './hooks/useTimelineItems'
 import { scrollToSection } from './utils/scrollToSection'
 
 function App() {
@@ -33,6 +34,14 @@ function App() {
     skillsError,
     updateSkillGroup,
   } = useSkillGroups()
+  const {
+    createTimelineItem,
+    deleteTimelineItem,
+    isLoadingTimeline,
+    timelineError,
+    timelineItems,
+    updateTimelineItem,
+  } = useTimelineItems()
 
   return (
     <PageShell theme={content}>
@@ -40,18 +49,22 @@ function App() {
         content={content}
         onCreateProject={createProject}
         onCreateSkillGroup={createSkillGroup}
+        onCreateTimelineItem={createTimelineItem}
         onDeleteProject={deleteProject}
         onDeleteSkillGroup={deleteSkillGroup}
+        onDeleteTimelineItem={deleteTimelineItem}
         onReset={resetContent}
         onSave={saveContent}
         onUpdateProject={updateProject}
         onUpdateSkillGroup={updateSkillGroup}
+        onUpdateTimelineItem={updateTimelineItem}
         projects={projects}
         skillGroups={skillGroups}
+        timelineItems={timelineItems}
       />
-      {error || projectsError || skillsError ? (
+      {error || projectsError || skillsError || timelineError ? (
         <div className="fixed inset-x-4 bottom-20 z-[80] mx-auto max-w-xl rounded-lg border border-amber-300/25 bg-amber-300/10 px-4 py-3 text-sm leading-7 text-amber-100 shadow-2xl shadow-black/20 backdrop-blur md:bottom-5">
-          {error || projectsError || skillsError}
+          {error || projectsError || skillsError || timelineError}
         </div>
       ) : null}
       {isLoading ? (
@@ -72,7 +85,7 @@ function App() {
         <About content={content} />
         <Skills isLoading={isLoadingSkills} skillGroups={skillGroups} />
         <Projects isLoading={isLoadingProjects} projects={projects} />
-        <Timeline />
+        <Timeline isLoading={isLoadingTimeline} timelineItems={timelineItems} />
         <Contact content={content} />
       </main>
       <Footer content={content} />

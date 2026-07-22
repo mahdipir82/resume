@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { api } from '../../api/client'
 import { ProjectManager } from './ProjectManager'
 import { SkillManager } from './SkillManager'
+import { TimelineManager } from './TimelineManager'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
 
@@ -43,14 +44,18 @@ export function AdminPanel({
   content,
   onCreateProject,
   onCreateSkillGroup,
+  onCreateTimelineItem,
   onDeleteProject,
   onDeleteSkillGroup,
+  onDeleteTimelineItem,
   onReset,
   onSave,
   onUpdateProject,
   onUpdateSkillGroup,
+  onUpdateTimelineItem,
   projects,
   skillGroups,
+  timelineItems,
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [draft, setDraft] = useState(content)
@@ -343,6 +348,12 @@ export function AdminPanel({
                     onDelete={onDeleteSkillGroup}
                     onUpdate={onUpdateSkillGroup}
                     skillGroups={skillGroups}
+                  />
+                  <TimelineManager
+                    onCreate={onCreateTimelineItem}
+                    onDelete={onDeleteTimelineItem}
+                    onUpdate={onUpdateTimelineItem}
+                    timelineItems={timelineItems}
                   />
                 </div>
               )}

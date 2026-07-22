@@ -47,6 +47,7 @@ export const api = {
   getProjects: () => request('/projects/'),
   getSkillGroups: () => request('/skill-groups/'),
   getSiteContent: () => request('/site-content/'),
+  getTimelineItems: () => request('/timeline-items/'),
   createProject: (project) =>
     request('/projects/', {
       body: JSON.stringify(project),
@@ -57,9 +58,16 @@ export const api = {
       body: JSON.stringify(skillGroup),
       method: 'POST',
     }),
+  createTimelineItem: (timelineItem) =>
+    request('/timeline-items/', {
+      body: JSON.stringify(timelineItem),
+      method: 'POST',
+    }),
   deleteProject: (projectId) => request(`/projects/${projectId}/`, { method: 'DELETE' }),
   deleteSkillGroup: (skillGroupId) =>
     request(`/skill-groups/${skillGroupId}/`, { method: 'DELETE' }),
+  deleteTimelineItem: (timelineItemId) =>
+    request(`/timeline-items/${timelineItemId}/`, { method: 'DELETE' }),
   loginAdmin: (password) =>
     request('/admin/login/', {
       body: JSON.stringify({ password }),
@@ -80,6 +88,11 @@ export const api = {
   updateSkillGroup: (skillGroup) =>
     request(`/skill-groups/${skillGroup.id}/`, {
       body: JSON.stringify(skillGroup),
+      method: 'PUT',
+    }),
+  updateTimelineItem: (timelineItem) =>
+    request(`/timeline-items/${timelineItem.id}/`, {
+      body: JSON.stringify(timelineItem),
       method: 'PUT',
     }),
   setupAdmin: (password) =>
