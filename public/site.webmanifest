@@ -1,6 +1,6 @@
 {
   "name": "رزومه مهدی پیرحیاتی",
-  "short_name": "Mahdi Portfolio",
+  "short_name": "MP",
   "description": "Personal portfolio website for Mahdi Pirhayati.",
   "dir": "rtl",
   "lang": "fa",
@@ -9,9 +9,14 @@
   "theme_color": "#020617",
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "128x128",
-      "type": "image/svg+xml"
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }

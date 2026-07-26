@@ -50,7 +50,7 @@ function App() {
   }, [content.fullName, content.role, content.siteTitle])
 
   useEffect(() => {
-    const faviconUrl = content.faviconUrl || '/favicon.svg'
+    const faviconUrl = content.faviconUrl || '/favicon.ico'
     let faviconLink = document.querySelector("link[rel='icon']")
 
     if (!faviconLink) {
@@ -62,7 +62,8 @@ function App() {
     faviconLink.href = faviconUrl
 
     const extension = faviconUrl.split('?')[0].split('.').pop()
-    faviconLink.type = extension === 'svg' ? 'image/svg+xml' : ''
+    faviconLink.type =
+      extension === 'svg' ? 'image/svg+xml' : extension === 'ico' ? 'image/x-icon' : ''
   }, [content.faviconUrl])
 
   return (

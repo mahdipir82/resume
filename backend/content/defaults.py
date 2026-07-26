@@ -1,6 +1,6 @@
 DEFAULT_SITE_CONTENT = {
     'siteTitle': 'مهدی پیرحیاتی | توسعه‌دهنده بک‌اند Python و Django',
-    'faviconUrl': '/favicon.svg',
+    'faviconUrl': '/favicon.ico',
     'logoUrl': '',
     'fullName': 'مهدی پیرحیاتی',
     'initials': 'MP',
