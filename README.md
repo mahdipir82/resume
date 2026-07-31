@@ -1,6 +1,4 @@
-# Mahdi Pirhayati Portfolio
-
-یک وب‌سایت رزومه و نمونه‌کار تک‌صفحه‌ای، فارسی و RTL برای مهدی پیرحیاتی.
+# Mahdi Pirhayati
 
 ## Tech Stack
 

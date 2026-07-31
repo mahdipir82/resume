@@ -3,8 +3,8 @@ DEFAULT_SKILL_GROUPS = [
         'title': 'Backend',
         'icon': 'code',
         'skills': [
-            {'name': 'Python', 'level': 'آشنا'},
-            {'name': 'Django', 'level': 'در حال یادگیری و تمرین'},
+            {'name': 'Python', 'level': 'مسلط'},
+            {'name': 'Django', 'level': 'مسلط'},
             {'name': 'Django REST Framework', 'level': 'در حال یادگیری'},
             {'name': 'REST API', 'level': 'آشنا'},
         ],
@@ -15,7 +15,7 @@ DEFAULT_SKILL_GROUPS = [
         'icon': 'database',
         'skills': [
             {'name': 'PostgreSQL', 'level': 'آشنا'},
-            {'name': 'طراحی مدل‌های دیتابیس', 'level': 'در حال یادگیری'},
+            {'name': 'طراحی مدل‌های دیتابیس', 'level': 'مسلط'},
         ],
         'sort_order': 1,
     },
